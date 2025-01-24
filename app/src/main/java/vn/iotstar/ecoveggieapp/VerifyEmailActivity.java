@@ -77,7 +77,7 @@ public class VerifyEmailActivity extends AppCompatActivity {
 
     }
 
-    private void configureOtpBoxes() {
+    public void configureOtpBoxes() {
         // Khởi tạo mảng EditText cho các ô OTP
         otpBoxes = new EditText[6];
         otpBoxes[0] = findViewById(R.id.otp_box1);

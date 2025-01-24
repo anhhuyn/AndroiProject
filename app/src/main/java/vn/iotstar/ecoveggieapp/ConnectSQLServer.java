@@ -65,4 +65,20 @@ public class ConnectSQLServer {
         }
         return false;
     }
+
+    public boolean updatePassword(String email, String newPassword) {
+        try {
+            String query = "UPDATE users SET password = ? WHERE email = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, newPassword);
+            stmt.setString(2, email);
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Connection conn;
     String str;
 
-    private TextView txt_signup;
+    private TextView txt_signup, txt_forgotpass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
         ConnectSQLServer connectSQLServer = new ConnectSQLServer();
         conn = connectSQLServer.CONN();
         //connect();
+
+        txt_forgotpass = findViewById(R.id.txt_login_forgotPass);
+        txt_forgotpass.setOnClickListener(v ->
+        {
+            Intent intent = new Intent(MainActivity.this, ForgotPassActivity.class);
+            startActivity(intent);
+        });
 
         txt_signup = findViewById(R.id.txt_login_signup);
         txt_signup.setOnClickListener(v ->
