@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#F5F5F5">
+
+    <!-- Tiêu đề OTP -->
+    <TextView
+        android:id="@+id/tv_otp_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="XÁC THỰC OTP"
+        android:textColor="#84B040"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Mô tả gửi OTP -->
+    <TextView
+        android:id="@+id/tv_otp_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng nhập mã số chúng tôi đã gửi cho bạn qua email. Mã xác thực có giá trị trong 120s"
+        android:textColor="#757575"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp"
+        android:lineSpacingExtra="4dp" />
+
+    <!-- Các ô nhập OTP -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Ô nhập OTP 1 -->
+        <EditText
+            android:id="@+id/otp_box1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/otp_box_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp" />
+
+        <!-- Ô nhập OTP 2 -->
+        <EditText
+            android:id="@+id/otp_box2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/otp_box_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp" />
+
+        <!-- Ô nhập OTP 3 -->
+        <EditText
+            android:id="@+id/otp_box3"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/otp_box_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp" />
+
+        <!-- Ô nhập OTP 4 -->
+        <EditText
+            android:id="@+id/otp_box4"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/otp_box_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp" />
+
+        <!-- Ô nhập OTP 5 -->
+        <EditText
+            android:id="@+id/otp_box5"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/otp_box_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp" />
+
+        <!-- Ô nhập OTP 6 -->
+        <EditText
+            android:id="@+id/otp_box6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/otp_box_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Nút Tiếp tục -->
+    <Button
+        android:id="@+id/btn_verifyemail_verify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#84B040"
+        android:text="Xác nhận"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:padding="12dp" />
+
+</LinearLayout>
+
