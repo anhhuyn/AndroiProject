@@ -1,17 +1,141 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
 
+    <!-- Thanh tìm kiếm -->
+    <LinearLayout
+        android:id="@+id/search_bar_container"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <EditText
+            android:id="@+id/search_bar"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:background="@color/gray"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="8dp"
+            android:hint="Tìm kiếm..."
+            android:paddingStart="8dp"
+            android:paddingLeft="8dp"
+            android:textSize="16sp" />
+
+
+
+        <ImageView
+            android:id="@+id/icon_camera"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_camera"
+            android:tint="#A0A0A0" />
+    </LinearLayout>
+
+    <!-- Nút giỏ hàng và thông báo -->
+    <LinearLayout
+        android:id="@+id/top_right_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintMarginEnd="16dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_cart"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_cart"
+                android:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/cart_badge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/badge_background"
+                android:text="99+"
+                android:textSize="10sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_alignEnd="@id/icon_cart"
+                android:layout_alignTop="@id/icon_cart" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp">
+
+            <ImageView
+                android:id="@+id/icon_notification"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_notification"
+                android:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/notification_badge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:background="@drawable/badge_background"
+                android:text="35"
+                android:textSize="10sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_alignEnd="@id/icon_notification"
+                android:layout_alignTop="@id/icon_notification" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Tiêu đề "Trang chủ" -->
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Trang chủ"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/search_bar_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- TextView Hello -->
+    <TextView
+        android:id="@+id/txtHello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello!"
+        app:layout_constraintTop_toBottomOf="@id/textView4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintMarginStart="16dp" />
+
+    <!-- TextView Đăng xuất -->
+    <TextView
+        android:id="@+id/txtLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đăng xuất"
+        android:textColor="#FF0000"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/textView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintMarginEnd="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

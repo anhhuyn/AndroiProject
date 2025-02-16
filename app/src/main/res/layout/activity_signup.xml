@@ -92,7 +92,7 @@
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
-        android:backgroundTint="#84B040"
+        android:backgroundTint="@color/green_main"
         android:text="Đăng ký"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

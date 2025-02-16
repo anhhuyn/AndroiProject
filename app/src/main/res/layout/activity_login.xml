@@ -51,7 +51,7 @@
         android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#84B040"
+        android:backgroundTint="@color/green_main"
         android:text="Đăng nhập"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"

@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="XÁC THỰC OTP"
-        android:textColor="#84B040"
+        android:textColor="@color/green_main"
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_marginBottom="16dp" />
@@ -116,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#84B040"
+        android:backgroundTint="@color/green_main"
         android:text="Xác nhận"
         android:textColor="#FFFFFF"
         android:textSize="16sp"

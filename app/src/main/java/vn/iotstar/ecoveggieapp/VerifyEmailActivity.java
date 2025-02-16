@@ -11,10 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.EdgeToEdge;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,7 +49,7 @@ public class VerifyEmailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verifyemail);
 
         verificationCode = getIntent().getStringExtra("otpCode");
-        Log.d("OTP", "OTP từ email: " + verificationCode);
+        Log.d("OTP", "OTP từ email: " + verificationCode);configureOtpBoxes();
         configureOtpBoxes();
 
         Button btn_verifyEmail = findViewById(R.id.btn_verifyemail_verify);
@@ -56,7 +67,42 @@ public class VerifyEmailActivity extends AppCompatActivity {
                 String phone = getIntent().getStringExtra("phone");
                 String password = getIntent().getStringExtra("password");
 
-                conn = connectSQLServer.CONN();
+                RequestQueue queue = Volley.newRequestQueue(VerifyEmailActivity.this);
+                // The URL Posting TO:
+                String url = "http://192.168.1.7:9080/api/v1/user/register";
+
+                // String Request Object;
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if(response.equalsIgnoreCase("success"))
+                        {
+                            Toast.makeText(VerifyEmailActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(VerifyEmailActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(VerifyEmailActivity.this, "Đăng ký thất bại!", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                {
+                    @Nullable
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("username",username);
+                        params.put("email",email);
+                        params.put("phone",phone);
+                        params.put("password",password);
+                        return params;
+                    }
+                };
+                queue.add(stringRequest);
+                /*conn = connectSQLServer.CONN();
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
                 executorService.execute(() -> {
                     boolean isSignupSuccessful = connectSQLServer.dangKy(username, email, phone, password);
@@ -68,7 +114,7 @@ public class VerifyEmailActivity extends AppCompatActivity {
                             finish();
                         }
                     });
-                });
+                });*/
             } else {
                 // Mã OTP sai
                 Toast.makeText(VerifyEmailActivity.this, "Mã xác nhận không đúng, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
