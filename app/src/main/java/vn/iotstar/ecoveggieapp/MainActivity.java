@@ -50,11 +50,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
         txt_signup = findViewById(R.id.txt_login_signup);
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         }
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         // The URL Posting TO:
-        String url = "http://192.168.1.7:9080/api/v1/user/login";
+        String url = "http://192.168.1.16:9080/api/v1/user/login";
 
         // Set Parameters:
         HashMap<String, String> params = new HashMap<String, String>();
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                System.out.println(error.getMessage());
+                System.out.println("Lỗi:"+ error.getMessage());
                 Toast.makeText(MainActivity.this, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();
             }
         });//

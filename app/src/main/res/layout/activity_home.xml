@@ -21,7 +21,7 @@
         <EditText
             android:id="@+id/search_bar"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_weight="4"
             android:background="@color/gray"
             android:drawableStart="@drawable/ic_search"
@@ -189,17 +189,19 @@
     <!-- TextView Hello -->
 
     <!-- TextView Đăng xuất -->
+
+
     <TextView
         android:id="@+id/txtHello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginBottom="120dp"
         android:text="Hello!"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/txtLogout"
-        app:layout_constraintMarginStart="16dp"
-        app:layout_constraintStart_toStartOf="parent" />
+
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtLogout"
+        app:layout_constraintTop_toBottomOf="@+id/category_row" />
 
     <TextView
         android:id="@+id/txtLogout"
@@ -209,9 +211,9 @@
         android:textColor="#FF0000"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintMarginEnd="16dp"
-        tools:layout_editor_absoluteY="419dp" />
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/category_row" />
 
     <LinearLayout
         android:id="@+id/bottom_navigation"
