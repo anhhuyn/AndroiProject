@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,11 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ProductAdapter productAdapter;
     List<ProductModel> productList;
+    // Biến kiểm tra trạng thái sắp xếp giá
+    private boolean isPriceDescending = true;
+    private ImageView iconSort;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,8 @@ public class HomeActivity extends AppCompatActivity {
         txtBestselling = findViewById(R.id.txtBestselling);
         txtPrice = findViewById(R.id.txtPrice);
         recyclerView = findViewById(R.id.recyclerView);
+        iconSort = findViewById(R.id.icon_sort);
+
 
         setCategoryClickListener(txtPopular);
         setCategoryClickListener(txtNewest);
@@ -115,6 +123,25 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        txtPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedCategory(txtPrice);
+
+                if (isPriceDescending) {
+                    fetchProductsByPriceDesc();
+                    iconSort.setImageResource(R.drawable.ic_arrow_down);
+                } else {
+                    fetchProductsByPriceAsc();
+                    iconSort.setImageResource(R.drawable.ic_arrow_up);
+                }
+
+                // Đảo trạng thái
+                isPriceDescending = !isPriceDescending;
+            }
+        });
+
+
     }
 
     private void setCategoryClickListener(final TextView textView) {
@@ -135,7 +162,14 @@ public class HomeActivity extends AppCompatActivity {
         // Cập nhật trạng thái
         selectedCategory = textView;
         selectedCategory.setTextColor(getResources().getColor(R.color.green_main));
+
+        // Nếu chọn danh mục khác ngoài "Giá", reset icon về mặc định
+        if (selectedCategory != txtPrice) {
+            iconSort.setImageResource(R.drawable.ic_sort);
+        }
     }
+
+
 
 
     private void fetchProducts(String url) {
@@ -193,6 +227,16 @@ public class HomeActivity extends AppCompatActivity {
                 });
         queue.add(jsonArrayRequest);
     }
+
+    private void fetchProductsByPriceAsc() {
+        fetchProducts("http://192.168.1.19:9080/api/v1/products/price/asc");
+    }
+
+    // Gọi API sắp xếp theo giá giảm dần
+    private void fetchProductsByPriceDesc() {
+        fetchProducts("http://192.168.1.19:9080/api/v1/products/price/desc");
+    }
+
 
     // Gọi phương thức này với URL tương ứng
     private void fetchAllProducts() {

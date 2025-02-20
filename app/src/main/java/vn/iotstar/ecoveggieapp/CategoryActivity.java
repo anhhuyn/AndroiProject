@@ -29,7 +29,7 @@ public class CategoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CategoryAdapter categoryAdapter;
     private List<CategoryModel> categoryList;
-    private static final String URL = "http://192.168.1.21:9080/api/v1/categories/all"; // Địa chỉ API danh mục
+    private static final String URL = "http://192.168.1.19:9080/api/v1/categories/all"; // Địa chỉ API danh mục
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
