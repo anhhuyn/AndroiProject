@@ -3,9 +3,13 @@ package vn.iotstar.ecoveggieapp;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +32,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     // Biến kiểm tra trạng thái sắp xếp giá
     private boolean isPriceDescending = true;
     private ImageView iconSort;
+    private EditText edtSearchbar;
 
 
 
@@ -65,6 +73,8 @@ public class HomeActivity extends AppCompatActivity {
         txtPrice = findViewById(R.id.txtPrice);
         recyclerView = findViewById(R.id.recyclerView);
         iconSort = findViewById(R.id.icon_sort);
+        edtSearchbar = findViewById(R.id.edtSearchbar);
+        edtSearchbar.setInputType(InputType.TYPE_CLASS_TEXT);
 
 
         setCategoryClickListener(txtPopular);
@@ -122,6 +132,29 @@ public class HomeActivity extends AppCompatActivity {
                 fetchAllProducts();
             }
         });
+
+        txtBestselling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedCategory(txtBestselling);
+                fetchProductsBySoldQuantityDesc();
+            }
+        });
+
+        edtSearchbar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchProducts(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+
 
         txtPrice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,7 +221,7 @@ public class HomeActivity extends AppCompatActivity {
                                 String name = productJson.getString("product_name");
                                 String description = productJson.getString("description");
                                 double price = productJson.getDouble("price");
-                                int stock = productJson.getInt("instock_quantity");
+                                int stock = productJson.getInt("sold_quantity");
 
                                 String category = "Unknown";
                                 if (productJson.has("category") && !productJson.isNull("category")) {
@@ -228,6 +261,24 @@ public class HomeActivity extends AppCompatActivity {
         queue.add(jsonArrayRequest);
     }
 
+    private void searchProducts(String query) {
+        if (query.isEmpty()) {
+            fetchAllProducts();
+            return;
+        }
+
+        try {
+            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
+            String searchUrl = "http://192.168.1.19:9080/api/v1/products/search?name=" + encodedQuery;
+            fetchProducts(searchUrl);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Lỗi mã hóa tìm kiếm!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
     private void fetchProductsByPriceAsc() {
         fetchProducts("http://192.168.1.19:9080/api/v1/products/price/asc");
     }
@@ -246,6 +297,11 @@ public class HomeActivity extends AppCompatActivity {
     private void fetchProductsNewest() {
         fetchProducts("http://192.168.1.19:9080/api/v1/products/newest");
     }
+
+    private void fetchProductsBySoldQuantityDesc() {
+        fetchProducts("http://192.168.1.19:9080/api/v1/products/sold/desc");
+    }
+
 
 
     public void signUserOut() {
