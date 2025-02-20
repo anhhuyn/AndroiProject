@@ -49,6 +49,10 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".CategoryActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>
