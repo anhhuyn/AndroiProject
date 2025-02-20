@@ -1,6 +1,7 @@
 package vn.iotstar.ecoveggieapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -30,7 +31,8 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    TextView txtHello, txtLogout;
+    TextView txtHello, txtLogout, txtPopular, txtNewest, txtBestselling, txtPrice;
+    private TextView selectedCategory;
     RecyclerView recyclerView;
     ProductAdapter productAdapter;
     List<ProductModel> productList;
@@ -48,7 +50,20 @@ public class HomeActivity extends AppCompatActivity {
 
         txtHello = findViewById(R.id.txtHello);
         txtLogout = findViewById(R.id.txtLogout);
+        txtNewest = findViewById(R.id.txtNewest);
+        txtPopular = findViewById(R.id.txtPopular);
+        txtBestselling = findViewById(R.id.txtBestselling);
+        txtPrice = findViewById(R.id.txtPrice);
         recyclerView = findViewById(R.id.recyclerView);
+
+        setCategoryClickListener(txtPopular);
+        setCategoryClickListener(txtNewest);
+        setCategoryClickListener(txtBestselling);
+        setCategoryClickListener(txtPrice);
+
+        // Đặt mặc định là "Phổ biến"
+        selectedCategory = txtPopular;
+        setSelectedCategory(txtPopular);
 
         String username = getIntent().getStringExtra("username");
         if (username == null || username.isEmpty()) {
@@ -71,11 +86,47 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(productAdapter);
 
-        fetchProducts();
+        fetchAllProducts();
+        txtNewest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedCategory(txtNewest);
+                fetchProductsNewest();
+            }
+        });
+
+        txtPopular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSelectedCategory(txtPopular);
+                fetchAllProducts();
+            }
+        });
+
     }
 
-    private void fetchProducts() {
-        String url = "http://192.168.1.19:9080/api/v1/products/newest";
+    private void setCategoryClickListener(final TextView textView) {
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setSelectedCategory(textView);
+            }
+        });
+    }
+
+    private void setSelectedCategory(TextView textView) {
+        // Đặt màu lại cho category trước đó
+        if (selectedCategory != null) {
+            selectedCategory.setTextColor(Color.parseColor("#696969")); // Màu mặc định
+        }
+
+        // Cập nhật trạng thái
+        selectedCategory = textView;
+        selectedCategory.setTextColor(getResources().getColor(R.color.green_main));
+    }
+
+
+    private void fetchProducts(String url) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -101,7 +152,6 @@ public class HomeActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                // Lấy danh sách hình ảnh
                                 List<String> images = new ArrayList<>();
                                 if (productJson.has("productImages") && !productJson.isNull("productImages")) {
                                     JSONArray imagesArray = productJson.getJSONArray("productImages");
@@ -130,6 +180,15 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
         queue.add(jsonArrayRequest);
+    }
+
+    // Gọi phương thức này với URL tương ứng
+    private void fetchAllProducts() {
+        fetchProducts("http://192.168.1.19:9080/api/v1/products/all");
+    }
+
+    private void fetchProductsNewest() {
+        fetchProducts("http://192.168.1.19:9080/api/v1/products/newest");
     }
 
 

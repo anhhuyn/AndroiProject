@@ -111,7 +111,7 @@
 
         <!-- Phổ biến -->
         <TextView
-            android:id="@+id/text_popular"
+            android:id="@+id/txtPopular"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -128,7 +128,7 @@
 
         <!-- Mới nhất -->
         <TextView
-            android:id="@+id/text_latest"
+            android:id="@+id/txtNewest"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -145,7 +145,7 @@
 
         <!-- Bán chạy -->
         <TextView
-            android:id="@+id/text_best_selling"
+            android:id="@+id/txtBestselling"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -169,7 +169,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/text_price"
+                android:id="@+id/txtPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Giá"
@@ -248,7 +248,7 @@
                 android:src="@drawable/ic_home"
                 android:contentDescription="Trang chủ" />
             <TextView
-                android:id="@+id/text_home"
+                android:id="@+id/txtHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trang chủ"
