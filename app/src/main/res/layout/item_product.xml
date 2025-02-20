@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="4dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp">
 
@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/imgProduct"
             android:layout_width="0dp"
-            android:layout_height="140dp"
+            android:layout_height="135dp"
             android:scaleType="centerCrop"
             android:src="@drawable/quabo"
             app:layout_constraintEnd_toEndOf="parent"

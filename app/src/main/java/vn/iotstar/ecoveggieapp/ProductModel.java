@@ -1,5 +1,7 @@
 package vn.iotstar.ecoveggieapp;
 
+import java.util.List;
+
 public class ProductModel {
     private int product_id;
     private String product_name;
@@ -7,14 +9,16 @@ public class ProductModel {
     private double price;
     private int instock_quantity;
     private String category;
+    private List<String> images; // Danh sách hình ảnh
 
-    public ProductModel(int product_id, String product_name, String description, double price, int instock_quantity, String category) {
+    public ProductModel(int product_id, String product_name, String description, double price, int instock_quantity, String category, List<String> images) {
         this.product_id = product_id;
         this.product_name = product_name;
         this.description = description;
         this.price = price;
         this.instock_quantity = instock_quantity;
         this.category = category;
+        this.images = images;
     }
 
     public int getProduct_id() {
@@ -40,5 +44,8 @@ public class ProductModel {
     public String getCategory() {
         return category;
     }
-}
 
+    public List<String> getImages() {
+        return images;
+    }
+}

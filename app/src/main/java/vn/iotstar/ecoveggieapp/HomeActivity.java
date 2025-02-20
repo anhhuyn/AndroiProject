@@ -68,13 +68,14 @@ public class HomeActivity extends AppCompatActivity {
         productAdapter = new ProductAdapter(this, productList);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(productAdapter);
 
         fetchProducts();
     }
 
     private void fetchProducts() {
-        String url = "http://192.168.1.19:9080/api/v1/products/all";
+        String url = "http://192.168.1.19:9080/api/v1/products/newest";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -92,7 +93,6 @@ public class HomeActivity extends AppCompatActivity {
                                 double price = productJson.getDouble("price");
                                 int stock = productJson.getInt("instock_quantity");
 
-                                // Lấy category nếu tồn tại
                                 String category = "Unknown";
                                 if (productJson.has("category") && !productJson.isNull("category")) {
                                     JSONObject categoryJson = productJson.getJSONObject("category");
@@ -101,7 +101,18 @@ public class HomeActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                ProductModel product = new ProductModel(id, name, description, price, stock, category);
+                                // Lấy danh sách hình ảnh
+                                List<String> images = new ArrayList<>();
+                                if (productJson.has("productImages") && !productJson.isNull("productImages")) {
+                                    JSONArray imagesArray = productJson.getJSONArray("productImages");
+                                    for (int j = 0; j < imagesArray.length(); j++) {
+                                        JSONObject imageJson = imagesArray.getJSONObject(j);
+                                        String imageUrl = imageJson.getString("product_image");
+                                        images.add(imageUrl);
+                                    }
+                                }
+
+                                ProductModel product = new ProductModel(id, name, description, price, stock, category, images);
                                 productList.add(product);
                             }
                             productAdapter.notifyDataSetChanged();
@@ -120,6 +131,7 @@ public class HomeActivity extends AppCompatActivity {
                 });
         queue.add(jsonArrayRequest);
     }
+
 
     public void signUserOut() {
         txtHello.setText("Hello!");

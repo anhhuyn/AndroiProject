@@ -1,3 +1,5 @@
+
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -190,10 +192,10 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="8dp"
+        android:padding="4dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/category_row"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"/>
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation" />
 
     <!-- TextView Hello -->
 

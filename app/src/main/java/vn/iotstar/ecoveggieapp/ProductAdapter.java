@@ -4,10 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -35,7 +39,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.txtPrice.setText("Giá: $" + product.getPrice());
         holder.txtStock.setText("Đã bán " + product.getInstock_quantity());
 
-
+        // Load hình ảnh đầu tiên từ danh sách hình ảnh
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            String imageUrl = product.getImages().get(0); // Lấy ảnh đầu tiên
+            Glide.with(context)
+                    .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.placeholder_image) // Ảnh mặc định nếu chưa tải xong
+                    .error(R.drawable.placeholder_image) // Ảnh hiển thị nếu lỗi
+                    .into(holder.imgProduct);
+        } else {
+            holder.imgProduct.setImageResource(R.drawable.placeholder_image); // Ảnh mặc định nếu không có ảnh
+        }
     }
 
     @Override
@@ -44,15 +59,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView txtProductName, txtPrice, txtStock, txtCategory;
+        TextView txtProductName, txtPrice, txtStock;
+        ImageView imgProduct;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             txtProductName = itemView.findViewById(R.id.txtProductName);
             txtPrice = itemView.findViewById(R.id.txtProductPrice);
             txtStock = itemView.findViewById(R.id.txtSoldCount);
-
+            imgProduct = itemView.findViewById(R.id.imgProduct);
         }
     }
 }
-
