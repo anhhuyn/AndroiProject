@@ -9,7 +9,7 @@
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:padding="8dp">
 
@@ -20,35 +20,35 @@
             android:layout_height="140dp"
             android:scaleType="centerCrop"
             android:src="@drawable/quabo"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Tên sản phẩm -->
         <TextView
-            android:id="@+id/tvProductName"
+            android:id="@+id/txtProductName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Tên sản phẩm"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:maxLines="2"
-            android:ellipsize="end"
-            app:layout_constraintTop_toBottomOf="@id/imgProduct"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/imgProduct" />
 
         <!-- Giá sản phẩm -->
         <TextView
-            android:id="@+id/tvProductPrice"
+            android:id="@+id/txtProductPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="250.000đ"
-            android:textSize="14sp"
             android:textColor="@android:color/holo_red_dark"
+            android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/tvProductName"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtProductName" />
 
         <!-- Đánh giá (sao) -->
         <LinearLayout
@@ -56,57 +56,61 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tvProductPrice"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtProductPrice">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_star"/>
+                android:src="@drawable/ic_star" />
+
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_star"/>
+                android:src="@drawable/ic_star" />
+
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_star"/>
+                android:src="@drawable/ic_star" />
+
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_star"/>
+                android:src="@drawable/ic_star" />
+
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_star_half"/>
+                android:src="@drawable/ic_star_half" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/txtSoldCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đã bán 10"
-            android:textSize="11sp"
             android:background="?attr/selectableItemBackground"
             android:padding="4dp"
+            android:text="Đã bán 10"
+            android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/tvDiscountLabel"
             android:layout_width="50dp"
             android:layout_height="25dp"
-            android:text="-20%"
-            android:textStyle="bold"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="12sp"
-            android:background="#FFB3A7"
-            android:padding="4dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:background="#FFB3A7"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="-20%"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="12sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

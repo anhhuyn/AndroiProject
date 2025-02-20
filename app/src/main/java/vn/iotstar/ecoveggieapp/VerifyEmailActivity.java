@@ -69,7 +69,7 @@ public class VerifyEmailActivity extends AppCompatActivity {
 
                 RequestQueue queue = Volley.newRequestQueue(VerifyEmailActivity.this);
                 // The URL Posting TO:
-                String url = "http://192.168.1.7:9080/api/v1/user/register";
+                String url = "http://192.168.1.19:9080/api/v1/user/register";
 
                 // String Request Object;
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
