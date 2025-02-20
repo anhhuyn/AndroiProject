@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        LinearLayout layoutCategory = findViewById(R.id.layout_category); // Lấy LinearLayout
+
         txtHello = findViewById(R.id.txtHello);
         txtLogout = findViewById(R.id.txtLogout);
         recyclerView = findViewById(R.id.recyclerView);
@@ -60,6 +63,15 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signUserOut();
+            }
+        });
+
+        // Xử lý khi nhấp vào "Danh mục"
+        layoutCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
+                startActivity(intent);
             }
         });
 
