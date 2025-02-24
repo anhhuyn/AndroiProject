@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.models;
 
 import java.util.List;
 

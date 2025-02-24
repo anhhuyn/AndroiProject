@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,7 +14,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import vn.iotstar.ecoveggieapp.CategoryModel;
+import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.models.CategoryModel;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 

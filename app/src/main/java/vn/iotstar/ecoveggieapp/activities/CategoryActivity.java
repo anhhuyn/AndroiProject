@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.activities;
 
 import android.os.Bundle;
 import android.widget.Toast;
@@ -21,8 +21,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.iotstar.ecoveggieapp.CategoryAdapter;
-import vn.iotstar.ecoveggieapp.CategoryModel;
+import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.adapters.CategoryAdapter;
+import vn.iotstar.ecoveggieapp.models.CategoryModel;
 
 public class CategoryActivity extends AppCompatActivity {
 

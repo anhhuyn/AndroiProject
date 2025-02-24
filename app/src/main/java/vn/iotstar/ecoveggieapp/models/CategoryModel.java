@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.models;
 
 public class CategoryModel {
     private int category_id;

@@ -1,6 +1,5 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.activities;
 
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.Session;
@@ -19,18 +18,12 @@ import javax.mail.internet.InternetAddress;
 
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 
 public class SignupActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +26,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import vn.iotstar.ecoveggieapp.R;
 
 public class ForgotPassActivity extends AppCompatActivity {
     private TextView txt_backLogin;
@@ -74,10 +76,10 @@ public class ForgotPassActivity extends AppCompatActivity {
     }
 
     private void showOtpInterface() {
-        // Cập nhật giao diện để người dùng nhập mã OTP
-        setContentView(R.layout.activity_verifyemail); // Thay đổi layout trong Activity hiện tại
 
-        otpBoxes = new EditText[6]; // Giả sử bạn có 6 ô nhập OTP
+        setContentView(R.layout.activity_verifyemail);
+
+        otpBoxes = new EditText[6];
         otpBoxes[0] = findViewById(R.id.otp_box1);
         otpBoxes[1] = findViewById(R.id.otp_box2);
         otpBoxes[2] = findViewById(R.id.otp_box3);
@@ -85,9 +87,9 @@ public class ForgotPassActivity extends AppCompatActivity {
         otpBoxes[4] = findViewById(R.id.otp_box5);
         otpBoxes[5] = findViewById(R.id.otp_box6);
 
-        // Đặt sự kiện TextWatcher cho mỗi EditText
+
         for (int i = 0; i < otpBoxes.length; i++) {
-            int nextIndex = i + 1; // Chỉ định ô tiếp theo
+            int nextIndex = i + 1;
             otpBoxes[i].addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}

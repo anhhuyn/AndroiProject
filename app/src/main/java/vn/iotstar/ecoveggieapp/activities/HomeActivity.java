@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -37,6 +36,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.adapters.ProductAdapter;
+import vn.iotstar.ecoveggieapp.models.ProductModel;
 
 public class HomeActivity extends AppCompatActivity {
 

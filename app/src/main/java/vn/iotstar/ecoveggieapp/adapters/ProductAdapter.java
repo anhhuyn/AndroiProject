@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,6 +14,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
+
+import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.models.ProductModel;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 

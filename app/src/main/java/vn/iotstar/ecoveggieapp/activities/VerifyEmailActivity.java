@@ -1,4 +1,4 @@
-package vn.iotstar.ecoveggieapp;
+package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,8 +26,9 @@ import com.android.volley.toolbox.Volley;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import vn.iotstar.ecoveggieapp.ConnectSQLServer;
+import vn.iotstar.ecoveggieapp.R;
 
 public class VerifyEmailActivity extends AppCompatActivity {
 
