@@ -23,6 +23,7 @@ import java.util.List;
 
 import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.CategoryAdapter;
+import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.CategoryModel;
 
 public class CategoryActivity extends AppCompatActivity {
@@ -30,7 +31,7 @@ public class CategoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CategoryAdapter categoryAdapter;
     private List<CategoryModel> categoryList;
-    private static final String URL = "http://192.168.1.19:9080/api/v1/categories/all"; // Địa chỉ API danh mục
+    private static final String URL = "http://" + StringHelper.SERVER_IP +":9080/api/v1/categories/all"; // Địa chỉ API danh mục
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

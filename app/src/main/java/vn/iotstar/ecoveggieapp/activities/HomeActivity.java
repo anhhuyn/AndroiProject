@@ -39,6 +39,7 @@ import java.util.List;
 
 import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.ProductAdapter;
+import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.ProductModel;
 
 public class HomeActivity extends AppCompatActivity {
@@ -283,26 +284,26 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void fetchProductsByPriceAsc() {
-        fetchProducts("http://192.168.1.19:9080/api/v1/products/price/asc");
+        fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/price/asc");
     }
 
     // Gọi API sắp xếp theo giá giảm dần
     private void fetchProductsByPriceDesc() {
-        fetchProducts("http://192.168.1.19:9080/api/v1/products/price/desc");
+        fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/price/desc");
     }
 
 
     // Gọi phương thức này với URL tương ứng
     private void fetchAllProducts() {
-        fetchProducts("http://192.168.1.19:9080/api/v1/products/all");
+        fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/all");
     }
 
     private void fetchProductsNewest() {
-        fetchProducts("http://192.168.1.19:9080/api/v1/products/newest");
+        fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/newest");
     }
 
     private void fetchProductsBySoldQuantityDesc() {
-        fetchProducts("http://192.168.1.19:9080/api/v1/products/sold/desc");
+        fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/sold/desc");
     }
 
 

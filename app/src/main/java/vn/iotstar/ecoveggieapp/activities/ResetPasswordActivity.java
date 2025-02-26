@@ -79,7 +79,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private void sendResetPasswordRequest(String newPassword) {
-        String url = "http://192.168.1.20:9080/api/v1/user/resetpassword";
+        String url = "http://" + StringHelper.SERVER_IP +":9080/api/v1/user/resetpassword";
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JSONObject jsonBody = new JSONObject();

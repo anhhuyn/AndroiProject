@@ -29,6 +29,7 @@ import java.util.Map;
 
 import vn.iotstar.ecoveggieapp.ConnectSQLServer;
 import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 
 public class VerifyEmailActivity extends AppCompatActivity {
 
@@ -70,7 +71,7 @@ public class VerifyEmailActivity extends AppCompatActivity {
 
                 RequestQueue queue = Volley.newRequestQueue(VerifyEmailActivity.this);
                 // The URL Posting TO:
-                String url = "http://192.168.1.21:9080/api/v1/user/register";
+                String url = "http://" + StringHelper.SERVER_IP +":9080/api/v1/user/register";
 
                 // String Request Object;
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
