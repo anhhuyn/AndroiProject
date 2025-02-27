@@ -1,7 +1,7 @@
 package vn.iotstar.ecoveggieapp.helpers;
 
 public class StringHelper {
-    public static final String SERVER_IP = "172.172.29.127";
+    public static final String SERVER_IP = "192.168.1.16";
     // Set Regular Expression Pattern for Email:
     public static boolean regexEmailValidationPattern(String email) {
         // Set Pattern:
