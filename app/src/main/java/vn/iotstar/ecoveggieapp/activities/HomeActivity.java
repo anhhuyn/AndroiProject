@@ -69,6 +69,14 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         LinearLayout layoutCategory = findViewById(R.id.layout_category); // Lấy LinearLayout
+        LinearLayout layoutProfile = findViewById(R.id.layout_profile);
+        layoutProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         txtHello = findViewById(R.id.txtHello);
         txtLogout = findViewById(R.id.txtLogout);
@@ -144,6 +152,18 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setSelectedCategory(txtBestselling);
                 fetchProductsBySoldQuantityDesc();
+            }
+        });
+
+        // Tìm LinearLayout theo ID
+        LinearLayout layoutStore = findViewById(R.id.layout_store);
+
+        // Bắt sự kiện nhấp vào LinearLayout
+        layoutStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, StoreActivity.class);
+                startActivity(intent);
             }
         });
 

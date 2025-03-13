@@ -53,6 +53,16 @@
             android:name=".activities.CategoryActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".activities.StoreActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

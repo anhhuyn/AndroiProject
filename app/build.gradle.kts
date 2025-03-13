@@ -58,5 +58,8 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation(libs.glide)
     annotationProcessor(libs.glideCompiler)
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
 
 }
