@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
     private boolean isPriceDescending = true;
     private ImageView iconSort;
     private EditText edtSearchbar;
+    private TextView txtEmptyMessage;
 
 
 
@@ -79,6 +80,7 @@ public class HomeActivity extends AppCompatActivity {
         iconSort = findViewById(R.id.icon_sort);
         edtSearchbar = findViewById(R.id.edtSearchbar);
         edtSearchbar.setInputType(InputType.TYPE_CLASS_TEXT);
+        txtEmptyMessage = findViewById(R.id.txtEmptyMessage);
 
 
         setCategoryClickListener(txtPopular);
@@ -178,8 +180,29 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        int categoryId = getIntent().getIntExtra("category_id", -1);
+        String categoryName = getIntent().getStringExtra("category_name");
+
+        if (categoryId != -1) {
+            fetchProductsByCategory(categoryId);
+        }
 
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent); // Cập nhật Intent mới
+
+        int categoryId = intent.getIntExtra("category_id", -1);
+        if (categoryId != -1) {
+            setSelectedCategory(txtPopular); // Đặt lại UI
+            fetchProductsByCategory(categoryId);
+        } else {
+            fetchAllProducts();
+        }
+    }
+
 
     private void setCategoryClickListener(final TextView textView) {
         textView.setOnClickListener(new View.OnClickListener() {
@@ -205,8 +228,6 @@ public class HomeActivity extends AppCompatActivity {
             iconSort.setImageResource(R.drawable.ic_sort);
         }
     }
-
-
 
 
     private void fetchProducts(String url) {
@@ -249,6 +270,14 @@ public class HomeActivity extends AppCompatActivity {
                                 productList.add(product);
                             }
                             productAdapter.notifyDataSetChanged();
+                            // Kiểm tra danh sách trống
+                            if (productList.isEmpty()) {
+                                txtEmptyMessage.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.GONE);
+                            } else {
+                                txtEmptyMessage.setVisibility(View.GONE);
+                                recyclerView.setVisibility(View.VISIBLE);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(HomeActivity.this, "Lỗi phân tích dữ liệu!", Toast.LENGTH_SHORT).show();
@@ -271,16 +300,15 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
-        try {
-            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
-            String searchUrl = "http://192.168.1.19:9080/api/v1/products/search?name=" + encodedQuery;
-            fetchProducts(searchUrl);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Lỗi mã hóa tìm kiếm!", Toast.LENGTH_SHORT).show();
-        }
+        String searchUrl = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/products/search?name=" + query;
+        fetchProducts(searchUrl);
     }
 
+
+    private void fetchProductsByCategory(int categoryId) {
+        String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/products/category/" + categoryId;
+        fetchProducts(url);
+    }
 
 
     private void fetchProductsByPriceAsc() {

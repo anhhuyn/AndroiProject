@@ -35,11 +35,6 @@ public class SignupActivity extends AppCompatActivity {
     private EditText edt_signup_repass;
     private Button btn_signup;
 
-
-    /*Connection conn;
-    ConnectSQLServer connectSQLServer = new ConnectSQLServer();*/
-    //int code;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,43 +81,6 @@ public class SignupActivity extends AppCompatActivity {
 
     }
 
-        /*btn_signup = findViewById(R.id.btn_signup);
-        btn_signup.setOnClickListener(v -> {
-            edt_signup_username = findViewById(R.id.edt_signup_username);
-            edt_signup_email = findViewById(R.id.edt_signup_email);
-            edt_signup_phone = findViewById(R.id.edt_signup_phone);
-            edt_signup_password = findViewById(R.id.edt_signup_password);
-            edt_signup_repass = findViewById(R.id.edt_signup_repass);
-
-            String username = edt_signup_username.getText().toString();
-            String email = edt_signup_email.getText().toString();
-            String phone = edt_signup_phone.getText().toString();
-            String password = edt_signup_password.getText().toString();
-            String repassword = edt_signup_repass.getText().toString();
-
-            if(!password.equals(repassword))
-            {
-                Toast.makeText(this, "Mật khẩu không trùng khớp!", Toast.LENGTH_SHORT).show();
-            }
-            else if (username.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || repassword.isEmpty())
-            {
-                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                String code = generateRandomString(6);
-                sendEmail(email, "Your Verification Code", "Your verification code is: " + code);
-
-                Intent intent = new Intent(SignupActivity.this, VerifyEmailActivity.class);
-                intent.putExtra("email", email);
-                intent.putExtra("otpCode", code);  // Gửi mã OTP vào màn hình xác thực
-                intent.putExtra("username", username);
-                intent.putExtra("phone", phone);
-                intent.putExtra("password", password); // Gửi thông tin đăng ký vào màn hình xác thực
-                startActivity(intent);
-
-            }
-        });*/
     public void goToSignIn(View view){
         Intent intent = new Intent(SignupActivity.this, MainActivity.class);
         startActivity(intent);

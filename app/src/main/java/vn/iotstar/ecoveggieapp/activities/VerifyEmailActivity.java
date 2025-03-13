@@ -2,6 +2,7 @@ package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -35,8 +37,9 @@ public class VerifyEmailActivity extends AppCompatActivity {
 
     private EditText[] otpBoxes;
     private String verificationCode;
-    Connection conn;
-    ConnectSQLServer connectSQLServer = new ConnectSQLServer();
+    private CountDownTimer countDownTimer;
+    private TextView otpTimerText;
+    private boolean isOtpValid = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +53,20 @@ public class VerifyEmailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_verifyemail);
 
+        otpTimerText = findViewById(R.id.otpTimerText); // Gán TextView từ XML
+
+        startOtpTimer();
+
         verificationCode = getIntent().getStringExtra("otpCode");
         Log.d("OTP", "OTP từ email: " + verificationCode);configureOtpBoxes();
         configureOtpBoxes();
 
         Button btn_verifyEmail = findViewById(R.id.btn_verifyemail_verify);
         btn_verifyEmail.setOnClickListener(v -> {
+            if (!isOtpValid) { // Nếu OTP đã hết hạn
+                Toast.makeText(VerifyEmailActivity.this, "Mã OTP đã hết hạn, vui lòng yêu cầu mã mới!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             StringBuilder otpCode = new StringBuilder();
             for (EditText otpBox : otpBoxes) {
                 otpCode.append(otpBox.getText().toString());
@@ -70,7 +81,6 @@ public class VerifyEmailActivity extends AppCompatActivity {
                 String password = getIntent().getStringExtra("password");
 
                 RequestQueue queue = Volley.newRequestQueue(VerifyEmailActivity.this);
-                // The URL Posting TO:
                 String url = "http://" + StringHelper.SERVER_IP +":9080/api/v1/user/register";
 
                 // String Request Object;
@@ -104,29 +114,38 @@ public class VerifyEmailActivity extends AppCompatActivity {
                     }
                 };
                 queue.add(stringRequest);
-                /*conn = connectSQLServer.CONN();
-                ExecutorService executorService = Executors.newSingleThreadExecutor();
-                executorService.execute(() -> {
-                    boolean isSignupSuccessful = connectSQLServer.dangKy(username, email, phone, password);
-                    runOnUiThread(() -> {
-                        if (isSignupSuccessful) {
-                            Toast.makeText(VerifyEmailActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(VerifyEmailActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                });*/
             } else {
-                // Mã OTP sai
                 Toast.makeText(VerifyEmailActivity.this, "Mã xác nhận không đúng, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
+    private void startOtpTimer() {
+        countDownTimer = new CountDownTimer(120000, 1000) { // 120 giây, cập nhật mỗi giây
+            public void onTick(long millisUntilFinished) {
+                long secondsRemaining = millisUntilFinished / 1000;
+                otpTimerText.setText("Mã OTP hết hạn sau: " + secondsRemaining + " giây");
+            }
+
+            public void onFinish() {
+                otpTimerText.setText("Mã OTP đã hết hạn!");
+                isOtpValid = false;
+                // Tùy chọn: Vô hiệu hóa nút xác thực OTP nếu cần
+                // btnVerify.setEnabled(false);
+            }
+        }.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel(); // Hủy timer khi thoát activity
+        }
+    }
+
     public void configureOtpBoxes() {
-        // Khởi tạo mảng EditText cho các ô OTP
         otpBoxes = new EditText[6];
         otpBoxes[0] = findViewById(R.id.otp_box1);
         otpBoxes[1] = findViewById(R.id.otp_box2);
@@ -148,7 +167,6 @@ public class VerifyEmailActivity extends AppCompatActivity {
                         otpBoxes[finalI + 1].requestFocus(); // Chuyển sang ô tiếp theo
                     }
                 }
-
                 @Override
                 public void afterTextChanged(Editable s) {}
             });
