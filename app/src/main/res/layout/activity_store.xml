@@ -121,14 +121,14 @@
                 android:id="@+id/icon_home"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_home_green" />
+                android:src="@drawable/ic_home" />
             <TextView
                 android:id="@+id/txtHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trang chủ"
                 android:textSize="13sp"
-                android:textColor="@color/green_main"
+                android:textColor="#696969"
                 android:gravity="center" />
         </LinearLayout>
 
@@ -144,13 +144,13 @@
                 android:id="@+id/icon_store"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_store" />
+                android:src="@drawable/ic_store_green" />
             <TextView
                 android:id="@+id/text_store"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cửa hàng"
-                android:textColor="#696969"
+                android:textColor="@color/green_main"
                 android:textSize="13sp"
                 android:gravity="center" />
         </LinearLayout>

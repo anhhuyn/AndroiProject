@@ -80,14 +80,24 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
-                            String username = (String) response.get("username");
-                            String email = (String) response.get("email");
-                            String phone = (String) response.get("phone");
+                            int userId = response.getInt("user_id");
+                            String username = response.getString("username");
+                            String email = response.getString("email");
+                            String phone = response.getString("phone");
+                            String password = response.getString("password");
+                            String avatar = response.isNull("avatar") ? "" : response.getString("avatar");
+                            String gender = response.isNull("gender") ? "Không xác định" : response.getString("gender");
+                            String birthday = response.isNull("birthday") ? "" : response.getString("birthday");
 
                             Intent goToHome = new Intent(MainActivity.this, HomeActivity.class);
+                            goToHome.putExtra("user_id", userId);
                             goToHome.putExtra("username", username);
                             goToHome.putExtra("email", email);
                             goToHome.putExtra("phone", phone);
+                            goToHome.putExtra("password", password);
+                            goToHome.putExtra("avatar", avatar);
+                            goToHome.putExtra("gender", gender);
+                            goToHome.putExtra("birthday", birthday);
                             startActivity(goToHome);
                             finish();
 
@@ -147,85 +157,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-
-
-
-
-
-
-        /*ConnectSQLServer connectSQLServer = new ConnectSQLServer();
-        conn = connectSQLServer.CONN();
-        //connect();
-
-        txt_forgotpass = findViewById(R.id.txt_login_forgotPass);
-        txt_forgotpass.setOnClickListener(v ->
-        {
-            Intent intent = new Intent(MainActivity.this, ForgotPassActivity.class);
-            startActivity(intent);
-        });
-
-        txt_signup = findViewById(R.id.txt_login_signup);
-        txt_signup.setOnClickListener(v ->
-        {
-            Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-            startActivity(intent);
-        });
-
-        Button btnLogin = findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(v -> {
-            EditText edtEmail = findViewById(R.id.edt_login_email);
-            EditText edtPassword = findViewById(R.id.edt_login_password);
-
-            String email = edtEmail.getText().toString();
-            String password = edtPassword.getText().toString();
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            } else {
-                ExecutorService executorService = Executors.newSingleThreadExecutor();
-                executorService.execute(() -> {
-                    boolean isLoginSuccessful = connectSQLServer.kiemTraDangNhap(email, password);
-                    runOnUiThread(() -> {
-                        if (isLoginSuccessful) {
-                            Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                            // Chuyển sang màn hình chính
-                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Email hoặc mật khẩu không đúng!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                });
-            }
-        });
-
-    }
-    public void connect(){
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(() ->{
-            try {
-                if(conn == null){
-                    str = "Error";
-                }else {
-                    str = "Connected with SQL server";
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            runOnUiThread(() -> {
-                try {
-                    Thread.sleep(1000);
-                }catch (InterruptedException e){
-                    throw new RuntimeException(e);
-                }
-                Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-
-            });
-        });
-    }*/
-
-
 }

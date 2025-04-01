@@ -44,7 +44,7 @@ import vn.iotstar.ecoveggieapp.models.ProductModel;
 
 public class HomeActivity extends AppCompatActivity {
 
-    TextView txtHello, txtLogout, txtPopular, txtNewest, txtBestselling, txtPrice;
+    TextView txtHello, txtPopular, txtNewest, txtBestselling, txtPrice;
     private TextView selectedCategory;
     RecyclerView recyclerView;
     ProductAdapter productAdapter;
@@ -68,18 +68,36 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        // Nhận dữ liệu từ MainActivity
+        Intent intent = getIntent();
+        int userId = intent.getIntExtra("user_id", -1);
+        String username = intent.getStringExtra("username");
+        String email = intent.getStringExtra("email");
+        String phone = intent.getStringExtra("phone");
+        String password = intent.getStringExtra("password");
+        String avatar = intent.getStringExtra("avatar");
+        String gender = intent.getStringExtra("gender");
+        String birthday = intent.getStringExtra("birthday");
+
         LinearLayout layoutCategory = findViewById(R.id.layout_category); // Lấy LinearLayout
         LinearLayout layoutProfile = findViewById(R.id.layout_profile);
         layoutProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("username", username);
+                intent.putExtra("email", email);
+                intent.putExtra("phone", phone);
+                intent.putExtra("password", password);
+                intent.putExtra("avatar", avatar);
+                intent.putExtra("gender", gender);
+                intent.putExtra("birthday", birthday);
                 startActivity(intent);
             }
         });
 
         txtHello = findViewById(R.id.txtHello);
-        txtLogout = findViewById(R.id.txtLogout);
         txtNewest = findViewById(R.id.txtNewest);
         txtPopular = findViewById(R.id.txtPopular);
         txtBestselling = findViewById(R.id.txtBestselling);
@@ -100,18 +118,6 @@ public class HomeActivity extends AppCompatActivity {
         selectedCategory = txtPopular;
         setSelectedCategory(txtPopular);
 
-        String username = getIntent().getStringExtra("username");
-        if (username == null || username.isEmpty()) {
-            username = "User";
-        }
-        txtHello.setText("Hello, " + username + "!");
-
-        txtLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signUserOut();
-            }
-        });
 
         // Xử lý khi nhấp vào "Danh mục"
         layoutCategory.setOnClickListener(new View.OnClickListener() {
@@ -352,14 +358,5 @@ public class HomeActivity extends AppCompatActivity {
 
     private void fetchProductsBySoldQuantityDesc() {
         fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/sold/desc");
-    }
-
-
-
-    public void signUserOut() {
-        txtHello.setText("Hello!");
-        Intent goToSignup = new Intent(HomeActivity.this, MainActivity.class);
-        startActivity(goToSignup);
-        finish();
     }
 }
