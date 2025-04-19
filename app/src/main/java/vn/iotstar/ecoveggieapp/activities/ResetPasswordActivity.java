@@ -35,6 +35,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     private EditText edtNewPassword, edtConfirmPassword;
     private Button btnResetPassword;
     private String email, verificationCode;
+    private String actionType;  // lưu giá trị action_type
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +48,11 @@ public class ResetPasswordActivity extends AppCompatActivity {
         // Nhận dữ liệu từ Intent
         email = getIntent().getStringExtra("email");
         verificationCode = getIntent().getStringExtra("verification_code");
+        actionType = getIntent().getStringExtra("action_type");
 
         Log.d("ResetPassword", "Email: " + email);
         Log.d("ResetPassword", "Verification Code: " + verificationCode);
+        Log.d("ResetPassword", "Action Type: " + actionType);
 
         // Ánh xạ giao diện
         edtNewPassword = findViewById(R.id.edtNewPassword);
@@ -83,7 +86,18 @@ public class ResetPasswordActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
                     Toast.makeText(this, "Mật khẩu đã được cập nhật!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(ResetPasswordActivity.this, MainActivity.class));
+                    Intent intent;
+
+                    // Kiểm tra actionType để quyết định chuyển trang
+                    if ("reset".equals(actionType)) {
+                        // Quay về MainActivity khi quên mật khẩu
+                        intent = new Intent(ResetPasswordActivity.this, EditProfileActivity.class);
+                    } else {
+                        // Quay về EditProfileActivity khi reset mật khẩu
+                        intent = new Intent(ResetPasswordActivity.this, MainActivity.class);
+                    }
+
+                    startActivity(intent);
                     finish();
                 },
                 error -> handleVolleyError(error)

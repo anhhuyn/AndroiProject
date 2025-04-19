@@ -1,0 +1,247 @@
+package vn.iotstar.ecoveggieapp.activities;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import vn.iotstar.ecoveggieapp.R;
+
+import vn.iotstar.ecoveggieapp.adapters.ProductImageAdapter;
+import vn.iotstar.ecoveggieapp.adapters.ThumbnailAdapter;
+import vn.iotstar.ecoveggieapp.helpers.StringHelper;
+import vn.iotstar.ecoveggieapp.models.ProductModel;
+
+public class ProductDetailActivity extends AppCompatActivity {
+
+    private ViewPager2 viewPager;
+    private TextView productName, productPrice, productDescription, sellerRating, productSale, productCount, productUnit;
+    private TextView btnAddToCart, btnBuyNow;
+    private LinearLayout bottomNavigation;
+    private ProductModel product;
+    private RecyclerView recyclerViewThumbnails;
+    private ImageView btnBack;
+    private double price;
+    private int stock;
+    private String imageUrl;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_product_detail);
+
+        // Nhận product_id từ Intent
+        int productId = getIntent().getIntExtra("product_id", -1);
+
+
+        //Ánh xạ
+        initView();
+
+        // Lấy chi tiết sản phẩm từ API
+        fetchProductDetail(productId);
+
+        btnBack.setOnClickListener(v -> {
+            finish(); // Quay lại activity trước đó
+        });
+
+        btnBuyNow.setOnClickListener(v -> {
+            showBuyNowBottomSheet();
+        });
+
+    }
+
+    public void initView()
+    {
+        viewPager = findViewById(R.id.viewPagerImages);
+        productName = findViewById(R.id.productName);
+        productPrice = findViewById(R.id.productPrice);
+        productSale = findViewById(R.id.productSales);
+        productDescription = findViewById(R.id.productDescription);
+        sellerRating = findViewById(R.id.sellerRating);
+        btnAddToCart = findViewById(R.id.btnAddToCart);
+        btnBuyNow = findViewById(R.id.btnBuyNow);
+        bottomNavigation = findViewById(R.id.bottom_navigation);
+        productCount = findViewById(R.id.productCount);
+        productUnit = findViewById(R.id.productUnit);
+        recyclerViewThumbnails = findViewById(R.id.recyclerViewThumbnails);
+        btnBack = findViewById(R.id.btnBack);
+
+    }
+
+    private void fetchProductDetail(int productId) {
+        // Tạo URL API để lấy chi tiết sản phẩm
+        String url = "http://"+ StringHelper.SERVER_IP+":9080/api/v1/products/" + productId;
+        Log.d("ProductDetail", "Request URL: " + url);
+
+
+        // Khởi tạo RequestQueue
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Tạo request với URL để lấy chi tiết sản phẩm
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            // Lấy thông tin từ JSON
+                            String name = response.getString("product_name");
+                            price = response.getDouble("price");
+                            String description = response.isNull("description") ? "Chưa có mô tả sản phẩm này." : response.getString("description");
+                            stock = response.getInt("instock_quantity");
+                            int soldQuantity = response.getInt("sold_quantity");
+                            String unit = response.getString("unit");
+
+                            // In log các giá trị lấy được
+                            Log.d("ProductDetail", "Product Name: " + name);
+                            Log.d("ProductDetail", "Price: " + price);
+                            Log.d("ProductDetail", "Description: " + description);
+                            Log.d("ProductDetail", "Stock: " + stock);
+                            Log.d("ProductDetail", "Sold Quantity: " + soldQuantity);
+
+                            // Cập nhật thông tin sản phẩm
+                            productName.setText(name);
+                            productPrice.setText("₫" + price);
+                            productDescription.setText("Mô tả sản phẩm: \n"+description);
+                            productSale.setText("Đã bán " + soldQuantity);
+                            productCount.setText("Số lượng còn lại: "+ stock);
+                            productUnit.setText("Đơn vị tính: "+unit);
+
+                            // Lấy hình ảnh sản phẩm
+                            JSONArray imagesArray = response.getJSONArray("productImages");
+                            List<String> productImages = new ArrayList<>();
+                            for (int i = 0; i < imagesArray.length(); i++) {
+                                JSONObject imageJson = imagesArray.getJSONObject(i);
+                                imageUrl = imageJson.getString("product_image");
+                                productImages.add(imageUrl);
+                                Log.d("ProductDetail", "Image URL: " + imageUrl);
+
+                            }
+
+
+                            // Hiển thị hình ảnh sản phẩm trong ViewPager
+                            ProductImageAdapter productImageAdapter = new ProductImageAdapter(ProductDetailActivity.this, productImages);
+                            viewPager.setAdapter(productImageAdapter);
+
+                            ThumbnailAdapter thumbnailAdapter = new ThumbnailAdapter(ProductDetailActivity.this, productImages, position -> {
+                                viewPager.setCurrentItem(position); // Khi bấm thumbnail thì đổi hình lớn
+                            });
+                            recyclerViewThumbnails.setLayoutManager(new LinearLayoutManager(ProductDetailActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                            recyclerViewThumbnails.setAdapter(thumbnailAdapter);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ProductDetailActivity.this, "Error parsing product data.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+                            Log.e("ProductDetail", "HTTP Status Code: " + statusCode);
+                        }
+                        error.printStackTrace();
+                        Toast.makeText(ProductDetailActivity.this, "Error fetching product data.", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+
+        // Thêm request vào queue
+        queue.add(jsonObjectRequest);
+    }
+
+    private void showBuyNowBottomSheet() {
+        // Khởi tạo BottomSheetDialog
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+
+        // Inflate layout
+        View view = getLayoutInflater().inflate(R.layout.layout_bottom_buy_now, null);
+        dialog.setContentView(view);
+
+        // Ánh xạ các View trong BottomSheet
+        ImageView imgProduct = view.findViewById(R.id.imgProduct);
+        TextView tvPrice = view.findViewById(R.id.tvPrice);
+        TextView tvStock = view.findViewById(R.id.tvStock);
+        TextView txtQuantity = view.findViewById(R.id.txtQuantity);
+        ImageView btnClose = view.findViewById(R.id.btnClose);
+        TextView btnMinus = view.findViewById(R.id.btnMinus);
+        TextView btnPlus = view.findViewById(R.id.btnPlus);
+
+        // Hiển thị dữ liệu lên BottomSheet
+        // 1. Set giá sản phẩm
+        tvPrice.setText("₫" + price);
+        // 2. Set số lượng còn lại
+        tvStock.setText("Kho: " + stock);
+        // 3. Set tên sản phẩm nếu cần (nếu có TextView hiển thị tên sản phẩm trong BottomSheet)
+        // productName.setText(name); (nếu bạn có TextView tên sản phẩm)
+
+        // 4. Hiển thị hình ảnh sản phẩm
+        Glide.with(this)
+                .load(imageUrl) // Sử dụng Glide để load ảnh từ URL
+                .into(imgProduct);
+
+        // Xử lý sự kiện khi nhấn nút Close (đóng BottomSheet)
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        // Thêm hành động cho nút + và -
+        btnMinus.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(txtQuantity.getText().toString());
+            if (quantity > 1) {
+                quantity--;
+                txtQuantity.setText(String.valueOf(quantity));
+            }
+        });
+
+        btnPlus.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(txtQuantity.getText().toString());
+            if (quantity < stock) { // Không vượt quá số lượng còn lại
+                quantity++;
+                txtQuantity.setText(String.valueOf(quantity));
+            }
+        });
+
+        // Hiển thị BottomSheetDialog
+        dialog.setCancelable(true); // Cho phép tắt khi nhấn ra ngoài
+        dialog.show();
+    }
+
+
+
+}
+

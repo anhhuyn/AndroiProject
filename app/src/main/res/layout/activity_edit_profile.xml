@@ -37,7 +37,7 @@
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/btnSave"
+            android:id="@+id/txtSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -189,8 +189,8 @@
                 android:textSize="16sp"
                 android:textColor="@color/green_main"
                 android:background="@null"
-                android:focusable="false"
-                android:clickable="true"/>
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
 
         </LinearLayout>
 
@@ -261,11 +261,12 @@
 
         <!-- Đổi mật khẩu -->
         <LinearLayout
+            android:id="@+id/layoutChangePass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
+            android:padding="16dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -277,7 +278,7 @@
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_right_arrow"/>
+                android:src="@drawable/ic_right_arrow" />
         </LinearLayout>
 
         <View

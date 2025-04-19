@@ -2,6 +2,7 @@ package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -36,6 +37,10 @@ public class ForgotPassActivity extends AppCompatActivity {
     private EditText[] otpBoxes;
     private Button btn_verifyOtp;
     private String code;
+    private CountDownTimer countDownTimer;
+    private TextView otpTimerText;
+    private boolean isOtpValid = true;
+
     VerifyEmailActivity verifyEmailActivity = new VerifyEmailActivity();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +81,10 @@ public class ForgotPassActivity extends AppCompatActivity {
     }
 
     private void showOtpInterface() {
-
         setContentView(R.layout.activity_verifyemail);
+
+        otpTimerText = findViewById(R.id.otpTimerText);
+        startOtpTimer(); // Bắt đầu đếm ngược
 
         otpBoxes = new EditText[6];
         otpBoxes[0] = findViewById(R.id.otp_box1);
@@ -87,20 +94,17 @@ public class ForgotPassActivity extends AppCompatActivity {
         otpBoxes[4] = findViewById(R.id.otp_box5);
         otpBoxes[5] = findViewById(R.id.otp_box6);
 
-
         for (int i = 0; i < otpBoxes.length; i++) {
             int nextIndex = i + 1;
             otpBoxes[i].addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
                 @Override
-                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
-
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
                 @Override
-                public void afterTextChanged(Editable editable) {
-                    if (editable.length() == 1 && nextIndex < otpBoxes.length) {
-                        otpBoxes[nextIndex].requestFocus();  // Chuyển con trỏ sang ô tiếp theo
+                public void afterTextChanged(Editable s) {
+                    if (s.length() == 1 && nextIndex < otpBoxes.length) {
+                        otpBoxes[nextIndex].requestFocus();
                     }
                 }
             });
@@ -108,26 +112,50 @@ public class ForgotPassActivity extends AppCompatActivity {
 
         btn_verifyOtp = findViewById(R.id.btn_verifyemail_verify);
         btn_verifyOtp.setOnClickListener(v -> {
+            if (!isOtpValid) {
+                Toast.makeText(ForgotPassActivity.this, "Mã OTP đã hết hạn, vui lòng gửi lại!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             StringBuilder otpInput = new StringBuilder();
             for (EditText otpBox : otpBoxes) {
                 otpInput.append(otpBox.getText().toString());
             }
 
-            // Kiểm tra mã OTP người dùng nhập
             if (otpInput.toString().equals(code)) {
                 Toast.makeText(ForgotPassActivity.this, "OTP đúng!", Toast.LENGTH_SHORT).show();
-                // Sau khi OTP đúng, có thể tiếp tục các bước khác (ví dụ, chuyển đến Reset Password)
                 Intent intent = new Intent(ForgotPassActivity.this, ResetPasswordActivity.class);
-
-                // Truyền dữ liệu qua Intent
-                intent.putExtra("email", edt_email.getText().toString());  // Truyền email người dùng
-                intent.putExtra("verification_code", code);  // Hiển thị giao diện Reset Password
+                intent.putExtra("email", edt_email.getText().toString());
+                intent.putExtra("verification_code", code);
                 startActivity(intent);
             } else {
                 Toast.makeText(ForgotPassActivity.this, "Mã OTP không chính xác", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    private void startOtpTimer() {
+        countDownTimer = new CountDownTimer(120000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                long secondsRemaining = millisUntilFinished / 1000;
+                otpTimerText.setText("Mã OTP hết hạn sau: " + secondsRemaining + " giây");
+            }
+
+            public void onFinish() {
+                otpTimerText.setText("Mã OTP đã hết hạn!");
+                isOtpValid = false;
+            }
+        }.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+    }
+
 
 
     public static void sendEmail(String toEmail, String subject, String messageBody) {

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 
 
@@ -89,17 +90,21 @@ public class MainActivity extends AppCompatActivity {
                             String gender = response.isNull("gender") ? "Không xác định" : response.getString("gender");
                             String birthday = response.isNull("birthday") ? "" : response.getString("birthday");
 
+                            SharedPrefManager.getInstance(MainActivity.this).saveUser(
+                                    userId,
+                                    username,
+                                    email,
+                                    phone,
+                                    password,
+                                    avatar,
+                                    gender,
+                                    birthday
+                            );
+
                             Intent goToHome = new Intent(MainActivity.this, HomeActivity.class);
-                            goToHome.putExtra("user_id", userId);
-                            goToHome.putExtra("username", username);
-                            goToHome.putExtra("email", email);
-                            goToHome.putExtra("phone", phone);
-                            goToHome.putExtra("password", password);
-                            goToHome.putExtra("avatar", avatar);
-                            goToHome.putExtra("gender", gender);
-                            goToHome.putExtra("birthday", birthday);
                             startActivity(goToHome);
                             finish();
+
 
                         }catch (JSONException e){
                             e.printStackTrace();

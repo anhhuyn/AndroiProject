@@ -62,4 +62,10 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
 
+
+    // Thêm Retrofit và OkHttp
+    implementation(libs.retrofit)
+    implementation(libs.gsonConverter)
+    implementation(libs.okhttp)
+
 }
