@@ -1,5 +1,6 @@
 package vn.iotstar.ecoveggieapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,10 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -39,6 +38,7 @@ import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.ProductImageAdapter;
 import vn.iotstar.ecoveggieapp.adapters.ThumbnailAdapter;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
+import vn.iotstar.ecoveggieapp.models.CheckoutItemModel;
 import vn.iotstar.ecoveggieapp.models.ProductModel;
 
 public class ProductDetailActivity extends AppCompatActivity {
@@ -52,7 +52,9 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ImageView btnBack;
     private double price;
     private int stock;
+    private String unit;
     private String imageUrl;
+    private int productId;
 
 
     @Override
@@ -65,7 +67,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_detail);
 
         // Nhận product_id từ Intent
-        int productId = getIntent().getIntExtra("product_id", -1);
+        productId = getIntent().getIntExtra("product_id", -1);
 
 
         //Ánh xạ
@@ -93,7 +95,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         productDescription = findViewById(R.id.productDescription);
         sellerRating = findViewById(R.id.sellerRating);
         btnAddToCart = findViewById(R.id.btnAddToCart);
-        btnBuyNow = findViewById(R.id.btnBuyNow);
+        btnBuyNow = findViewById(R.id.btnBuy);
         bottomNavigation = findViewById(R.id.bottom_navigation);
         productCount = findViewById(R.id.productCount);
         productUnit = findViewById(R.id.productUnit);
@@ -123,7 +125,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                             String description = response.isNull("description") ? "Chưa có mô tả sản phẩm này." : response.getString("description");
                             stock = response.getInt("instock_quantity");
                             int soldQuantity = response.getInt("sold_quantity");
-                            String unit = response.getString("unit");
+                            unit = response.getString("unit");
 
                             // In log các giá trị lấy được
                             Log.d("ProductDetail", "Product Name: " + name);
@@ -151,8 +153,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                             }
 
-
-                            // Hiển thị hình ảnh sản phẩm trong ViewPager
                             ProductImageAdapter productImageAdapter = new ProductImageAdapter(ProductDetailActivity.this, productImages);
                             viewPager.setAdapter(productImageAdapter);
 
@@ -182,19 +182,16 @@ public class ProductDetailActivity extends AppCompatActivity {
 
                 });
 
-        // Thêm request vào queue
         queue.add(jsonObjectRequest);
     }
 
+    // Xử lý BottomSheet
     private void showBuyNowBottomSheet() {
-        // Khởi tạo BottomSheetDialog
         BottomSheetDialog dialog = new BottomSheetDialog(this);
 
-        // Inflate layout
         View view = getLayoutInflater().inflate(R.layout.layout_bottom_buy_now, null);
         dialog.setContentView(view);
 
-        // Ánh xạ các View trong BottomSheet
         ImageView imgProduct = view.findViewById(R.id.imgProduct);
         TextView tvPrice = view.findViewById(R.id.tvPrice);
         TextView tvStock = view.findViewById(R.id.tvStock);
@@ -202,24 +199,17 @@ public class ProductDetailActivity extends AppCompatActivity {
         ImageView btnClose = view.findViewById(R.id.btnClose);
         TextView btnMinus = view.findViewById(R.id.btnMinus);
         TextView btnPlus = view.findViewById(R.id.btnPlus);
+        TextView btnBuy = view.findViewById(R.id.btnBuy);
 
-        // Hiển thị dữ liệu lên BottomSheet
-        // 1. Set giá sản phẩm
         tvPrice.setText("₫" + price);
-        // 2. Set số lượng còn lại
         tvStock.setText("Kho: " + stock);
-        // 3. Set tên sản phẩm nếu cần (nếu có TextView hiển thị tên sản phẩm trong BottomSheet)
-        // productName.setText(name); (nếu bạn có TextView tên sản phẩm)
 
-        // 4. Hiển thị hình ảnh sản phẩm
         Glide.with(this)
-                .load(imageUrl) // Sử dụng Glide để load ảnh từ URL
+                .load(imageUrl)
                 .into(imgProduct);
 
-        // Xử lý sự kiện khi nhấn nút Close (đóng BottomSheet)
         btnClose.setOnClickListener(v -> dialog.dismiss());
 
-        // Thêm hành động cho nút + và -
         btnMinus.setOnClickListener(v -> {
             int quantity = Integer.parseInt(txtQuantity.getText().toString());
             if (quantity > 1) {
@@ -230,18 +220,36 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         btnPlus.setOnClickListener(v -> {
             int quantity = Integer.parseInt(txtQuantity.getText().toString());
-            if (quantity < stock) { // Không vượt quá số lượng còn lại
+            if (quantity < stock) {
                 quantity++;
                 txtQuantity.setText(String.valueOf(quantity));
             }
         });
 
-        // Hiển thị BottomSheetDialog
-        dialog.setCancelable(true); // Cho phép tắt khi nhấn ra ngoài
+        btnBuy.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(txtQuantity.getText().toString());
+
+            ArrayList<CheckoutItemModel> itemList = new ArrayList<>();
+            itemList.add(new CheckoutItemModel(
+                    productId,
+                    productName.getText().toString(),
+                    unit,
+                    price,
+                    quantity,
+                    imageUrl
+            ));
+
+            Intent intent = new Intent(this, CheckoutActivity.class);
+            intent.putExtra("checkout_items", itemList);
+            startActivity(intent);
+
+
+            dialog.dismiss();
+        });
+
+        dialog.setCancelable(true);
         dialog.show();
     }
-
-
 
 }
 

@@ -2,10 +2,18 @@ package vn.iotstar.ecoveggieapp.helpers;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Query;
+import vn.iotstar.ecoveggieapp.models.AddressModel;
+import vn.iotstar.ecoveggieapp.models.OrderModel;
 
 public interface ApiService {
 
@@ -18,4 +26,31 @@ public interface ApiService {
             @Part("birthday") RequestBody birthday,
             @Part MultipartBody.Part avatar
     );
+
+
+    @GET("address/default")
+    Call<AddressModel> getDefaultAddress(@Query("user_id") int userId);
+
+    @FormUrlEncoded
+    @POST("order/create")
+    Call<OrderModel> createOrder(
+            @Field("customer_id") int customerId,
+            @Field("total_amount") double totalAmount,
+            @Field("payment_method") String paymentMethod,
+            @Field("status") String status,
+            @Field("note") String note,
+            @Field("address_id") int addressId
+    );
+
+
+
+    @FormUrlEncoded
+    @POST("order/detail/create")
+    Call<ResponseBody> createOrderDetail(
+            @Field("order_id") int orderId,
+            @Field("product_id") int productId,
+            @Field("quantity") int quantity,
+            @Field("price") double price
+    );
+
 }

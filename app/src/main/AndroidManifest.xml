@@ -87,6 +87,11 @@
             android:name=".activities.ProductDetailActivity"
             android:exported="true">
         </activity>
+
+        <activity
+            android:name=".activities.CheckoutActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

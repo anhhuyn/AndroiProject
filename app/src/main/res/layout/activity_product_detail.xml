@@ -354,12 +354,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-                <View
-                    android:layout_width="481dp"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:background="@color/gray" />
             </LinearLayout>
 
     <!-- Product Description -->
@@ -372,6 +366,13 @@
         android:textColor="@android:color/darker_gray"
         android:layout_margin="16dp"
         app:layout_constraintTop_toBottomOf="@+id/divider5"/>
+
+            <View
+                android:layout_width="481dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:background="@color/gray" />
         </LinearLayout> <!-- End of the wrapper LinearLayout -->
 
     </androidx.core.widget.NestedScrollView>
@@ -405,7 +406,7 @@
             android:focusable="true" />
 
         <TextView
-            android:id="@+id/btnBuyNow"
+            android:id="@+id/btnBuy"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
