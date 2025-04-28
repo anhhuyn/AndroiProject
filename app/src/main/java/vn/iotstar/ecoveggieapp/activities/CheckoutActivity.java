@@ -1,6 +1,7 @@
 package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -8,7 +9,15 @@ import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
 import retrofit2.*;
@@ -23,19 +32,23 @@ import vn.iotstar.ecoveggieapp.models.CheckoutItemModel;
 import vn.iotstar.ecoveggieapp.models.OrderModel;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-    private TextView txtTotalAmount, txtVoucher, txtTotalPayment, txtSaveMoney, txtUsername, txtAddress, btnOrder;
+    private TextView txtTotalAmount, txtVoucher, txtTotalPayment, txtSaveMoney, txtUsername, txtAddress, btnOrder, txtPoint;
     private RecyclerView recyclerView;
     private ImageView btnBack;
     private List<CheckoutItemModel> itemList = new ArrayList<>();
-    private int addressId;
+    private int addressId, total;
     private LinearLayout layoutCOD, layoutBank;
     private String selectedPaymentMethod = "";
     private String userNote = "";
+    private Switch switchPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +58,16 @@ public class CheckoutActivity extends AppCompatActivity {
 
         int userId = SharedPrefManager.getInstance(this).getUserId();
         getAddressInfo(userId);
+        fetchPointData(userId);
 
         getIntentData();
         setupRecyclerView();
         displayAmountInfo();
+        initListeners();
         layoutCOD.setOnClickListener(v -> selectPaymentMethod("COD"));
         layoutBank.setOnClickListener(v -> selectPaymentMethod("BANK"));
         setupListeners(userId);
+
     }
 
     private void initViews() {
@@ -62,11 +78,13 @@ public class CheckoutActivity extends AppCompatActivity {
         txtSaveMoney = findViewById(R.id.txtSaveMoney);
         txtUsername = findViewById(R.id.txtUserName);
         txtAddress = findViewById(R.id.txtAddress);
-        btnOrder = findViewById(R.id.btnOrder);
+        btnOrder = findViewById(R.id.btnReceive);
         findViewById(R.id.layoutNote).setOnClickListener(v -> showNoteDialog());
         btnBack = findViewById(R.id.btnBack);
         layoutCOD = findViewById(R.id.layoutCOD);
         layoutBank = findViewById(R.id.layoutBank);
+        txtPoint = findViewById(R.id.txtPoint);
+        switchPoint = findViewById(R.id.switchPoint);
 
     }
 
@@ -95,6 +113,13 @@ public class CheckoutActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void initListeners() {
+        // Lắng nghe sự thay đổi của Switch
+        switchPoint.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            displayAmountInfo();  // Gọi lại hàm tính toán lại số tiền sau khi thay đổi
+        });
+    }
+
     private void displayAmountInfo() {
         double totalAmount = 0;
         for (CheckoutItemModel item : itemList) {
@@ -104,8 +129,13 @@ public class CheckoutActivity extends AppCompatActivity {
         double discount = totalAmount > 0 ? totalAmount * 0.10 : 0;
         double totalPayment = totalAmount - discount;
 
+        if (switchPoint.isChecked()) {
+            double totalDouble = (double) total;
+            double save = discount + totalDouble;
+            totalPayment -= totalDouble;
+        }
+
         txtTotalAmount.setText(String.format("%,.0f₫", totalAmount));
-        txtVoucher.setText(String.format("- %,.0f₫", discount));
         txtTotalPayment.setText(String.format("%,.0f₫", totalPayment));
         txtSaveMoney.setText(String.format("Tiết kiệm %,.0f₫", discount));
     }
@@ -248,6 +278,32 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void fetchPointData(int userId) {
+        String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/points/"+userId; // thay URL thật
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.length() > 0) {
+                            JSONObject obj = response.getJSONObject(
+
+                                    0);
+                            total = obj.getInt("totalPoints");
+                            txtPoint.setText("Dùng " + total + " điểm tích lũy");
+                        } else {
+                            Toast.makeText(this, "Không có dữ liệu điểm", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Lỗi phân tích JSON", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Lỗi kết nối API", Toast.LENGTH_SHORT).show());
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
 
     private ApiService getApiService() {

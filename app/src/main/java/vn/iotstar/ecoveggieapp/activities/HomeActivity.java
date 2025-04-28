@@ -68,6 +68,17 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        ImageView cartIcon = findViewById(R.id.icon_cart);
+
+        // Thiết lập sự kiện click cho biểu tượng giỏ hàng
+        cartIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Mở màn hình giỏ hàng khi nhấn vào biểu tượng giỏ hàng
+                Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
+        });
         // Nhận dữ liệu từ MainActivity
         Intent intent = getIntent();
         int userId = intent.getIntExtra("user_id", -1);

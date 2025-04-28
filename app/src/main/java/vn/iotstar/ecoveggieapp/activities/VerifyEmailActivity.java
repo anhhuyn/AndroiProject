@@ -85,12 +85,23 @@ public class VerifyEmailActivity extends AppCompatActivity {
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if(response.equalsIgnoreCase("success"))
-                        {
-                            Toast.makeText(VerifyEmailActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(VerifyEmailActivity.this, MainActivity.class);
-                            startActivity(intent);
+                        try {
+                            int userId = Integer.parseInt(response.trim()); // parse response thành số nguyên
+
+                            if (userId > 0) { // Nếu server trả về user_id > 0 => thành công
+                                Toast.makeText(VerifyEmailActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                                insertPointForUser(userId);
+                                Intent intent = new Intent(VerifyEmailActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish(); // Đóng VerifyEmailActivity sau khi chuyển màn
+                            } else {
+                                Toast.makeText(VerifyEmailActivity.this, "Đăng ký thất bại! Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(VerifyEmailActivity.this, "Lỗi server, không thể đọc kết quả!", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
                         }
+
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -118,6 +129,34 @@ public class VerifyEmailActivity extends AppCompatActivity {
         });
 
     }
+
+    private void insertPointForUser(int userId) {
+        RequestQueue queue = Volley.newRequestQueue(VerifyEmailActivity.this);
+        String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/points/insert";
+
+        StringRequest pointRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    if (response.equals("1")) {
+                        Log.d("PointInsert", "Thêm điểm thành công cho user_id: " + userId);
+                    } else {
+                        Log.e("PointInsert", "Thêm điểm thất bại!");
+                    }
+                },
+                error -> {
+                    Log.e("PointInsert", "Lỗi khi gọi API thêm điểm: " + error.getMessage());
+                }
+        ) {
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", String.valueOf(userId));
+                return params;
+            }
+        };
+        queue.add(pointRequest);
+    }
+
 
     private void startOtpTimer() {
         countDownTimer = new CountDownTimer(120000, 1000) { // 120 giây, cập nhật mỗi giây

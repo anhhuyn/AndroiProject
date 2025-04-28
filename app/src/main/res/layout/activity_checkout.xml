@@ -380,6 +380,7 @@
 
             <!-- Text -->
             <TextView
+                android:id="@+id/txtPoint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -389,7 +390,7 @@
 
             <!-- Switch -->
             <Switch
-                android:id="@+id/switchShopeeXu"
+                android:id="@+id/switchPoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -551,7 +552,7 @@
 
         <!-- Nút Đặt hàng -->
         <TextView
-            android:id="@+id/btnOrder"
+            android:id="@+id/btnReceive"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:paddingStart="30dp"
