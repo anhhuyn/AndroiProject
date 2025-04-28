@@ -129,9 +129,12 @@ public class CheckoutActivity extends AppCompatActivity {
         double discount = totalAmount > 0 ? totalAmount * 0.10 : 0;
         double totalPayment = totalAmount - discount;
 
+        txtVoucher.setText(String.format("%,.0f₫", discount));
+
+
         if (switchPoint.isChecked()) {
             double totalDouble = (double) total;
-            double save = discount + totalDouble;
+            discount += totalDouble;
             totalPayment -= totalDouble;
         }
 
@@ -201,7 +204,11 @@ public class CheckoutActivity extends AppCompatActivity {
                             OrderModel order = response.body();
                             int orderId = order.getId(); // Lấy order_id từ phản hồi
                             createOrderDetails(orderId);
-                            // Có thể chuyển sang OrderSuccessActivity tại đây nếu muốn
+                           // đặt lại point = 0
+                            if (switchPoint.isChecked()) {
+                                resetPointsAfterOrder(customerId);
+                            }
+
                         } else {
                             showToast("Đặt hàng thất bại");
                         }
@@ -305,6 +312,26 @@ public class CheckoutActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
+
+    private void resetPointsAfterOrder(int userId) {
+        ApiService apiService = getApiService();
+        apiService.resetTotalPoints(userId).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    
+                } else {
+                    showToast("Lỗi khi reset điểm.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                showToast("Lỗi kết nối khi reset điểm: " + t.getMessage());
+            }
+        });
+    }
+
 
     private ApiService getApiService() {
         return new Retrofit.Builder()

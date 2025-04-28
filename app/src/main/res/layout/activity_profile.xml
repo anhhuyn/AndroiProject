@@ -324,6 +324,7 @@
 
             <!-- Điểm tích lũy -->
             <LinearLayout
+                android:id="@+id/layout_point"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -346,7 +347,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2.700 xu"
+                    android:text="Xem điểm ..."
                     android:textSize="12sp"
                     android:textColor="@android:color/holo_red_dark"
                     android:gravity="center"/>

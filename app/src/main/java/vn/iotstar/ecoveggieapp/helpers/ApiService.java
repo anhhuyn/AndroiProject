@@ -53,4 +53,8 @@ public interface ApiService {
             @Field("price") double price
     );
 
+    @POST("points/reset")
+    Call<ResponseBody> resetTotalPoints(@Query("user_id") int userId);
+
+
 }
