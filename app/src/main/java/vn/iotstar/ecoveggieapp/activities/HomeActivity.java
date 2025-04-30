@@ -40,6 +40,7 @@ import java.util.List;
 import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.ProductAdapter;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
+import vn.iotstar.ecoveggieapp.models.CategoryModel;
 import vn.iotstar.ecoveggieapp.models.ProductModel;
 
 public class HomeActivity extends AppCompatActivity {
@@ -303,7 +304,9 @@ public class HomeActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                ProductModel product = new ProductModel(id, name, description, price, stock, category, images);
+                                CategoryModel categoryModel = new CategoryModel(category); // Tạo đối tượng CategoryModel từ tên
+
+                                ProductModel product = new ProductModel(id, name, description, price, stock, categoryModel, images);
                                 productList.add(product);
                             }
                             productAdapter.notifyDataSetChanged();

@@ -1,5 +1,7 @@
 package vn.iotstar.ecoveggieapp.helpers;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -13,6 +15,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 import vn.iotstar.ecoveggieapp.models.AddressModel;
+import vn.iotstar.ecoveggieapp.models.CartItemModel;
 import vn.iotstar.ecoveggieapp.models.OrderModel;
 
 public interface ApiService {
@@ -31,6 +34,13 @@ public interface ApiService {
     @GET("address/default")
     Call<AddressModel> getDefaultAddress(@Query("user_id") int userId);
 
+    @GET("address/all")
+    Call<List<AddressModel>> getAllAddresses(@Query("user_id") int userId);
+
+    @GET("cart/user")
+    Call<List<CartItemModel>> getCartItems(@Query("user_id") int userId);
+
+
     @FormUrlEncoded
     @POST("order/create")
     Call<OrderModel> createOrder(
@@ -41,8 +51,6 @@ public interface ApiService {
             @Field("note") String note,
             @Field("address_id") int addressId
     );
-
-
 
     @FormUrlEncoded
     @POST("order/detail/create")

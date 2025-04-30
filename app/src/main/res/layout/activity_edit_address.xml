@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!-- ScrollView chứa nội dung chính -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- Toolbar giả lập -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_left_arrow"
+                    android:contentDescription="Back"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sửa Địa chỉ"
+                    android:textSize="20sp"
+                    android:layout_marginStart="16dp"/>
+            </LinearLayout>
+
+            <!-- Dán và nhập nhanh -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#FFF0F0"
+                android:padding="12dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📌 Lưu ý"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nhập thông tin địa chỉ chính xác để chúng tôi có thể mang nông sản đến cho bạn nhé!"
+                    android:background="@android:color/white"
+                    android:textSize="14dp"
+                    android:layout_marginTop="8dp"
+                    android:padding="8dp"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:cursorVisible="false"/>
+            </LinearLayout>
+
+            <!-- Thông tin địa chỉ -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_rounded_white"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- Tiêu đề -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Họ và tên -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/edtName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ánh Huyền"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:background="@android:color/transparent"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginBottom="5dp" />
+
+                <!-- Số điện thoại -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Số điện thoại"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/edtPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="(+84) 394601129"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:background="@android:color/transparent"
+                    android:layout_marginBottom="16dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginBottom="5dp" />
+
+                <!-- Tỉnh/Thành phố -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tỉnh/Thành phố, Quận/Huyện, Phường/Xã"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_select_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvProvince"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="TP. Hồ Chí Minh\nThành Phố Thủ Đức\nPhường Linh Xuân"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Select Province"
+                        android:src="@drawable/ic_right_arrow" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginBottom="5dp" />
+
+                <!-- Tên đường -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tên đường, Tòa nhà, Số nhà"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="14sp"/>
+
+                <EditText
+                    android:id="@+id/edtDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="665 Quốc Lộ 1a, Khu Phố 3"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:background="@android:color/transparent"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Bản đồ (OSMDroid MapView) -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="16dp">
+
+                    <org.osmdroid.views.MapView
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <!-- Nhóm nút Zoom nằm ở góc dưới bên phải -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="16dp"
+                        android:orientation="vertical"
+                        android:gravity="end">
+
+                        <!-- Nút Zoom In -->
+                        <ImageView
+                            android:id="@+id/btnZoomIn"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginBottom="8dp"
+                            android:padding="3dp"
+                            android:src="@drawable/ic_zoom_in"
+                            android:background="@drawable/circle_background_edit_profile"
+                            android:contentDescription="Zoom In" />
+
+                        <!-- Nút Zoom Out -->
+                        <ImageView
+                            android:id="@+id/btnZoomOut"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:padding="3dp"
+                            android:src="@drawable/ic_zoom_out"
+                            android:background="@drawable/circle_background_edit_profile"
+                            android:contentDescription="Zoom Out" />
+                    </LinearLayout>
+
+                </FrameLayout>
+
+
+
+
+                <!-- Đặt làm địa chỉ mặc định -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:text="Đặt làm địa chỉ mặc định"
+                        android:textSize="16sp"/>
+
+                    <Switch
+                        android:id="@+id/switchDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Nút nằm cố định bên dưới -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:text="Xóa địa chỉ"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rect_red_button"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <TextView
+            android:id="@+id/btnComplete"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:gravity="center"
+            android:text="HOÀN THÀNH"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/rect_green_button"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
+</LinearLayout>

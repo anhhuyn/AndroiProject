@@ -25,6 +25,9 @@ public class AddressModel {
     @SerializedName("province")
     private String province;
 
+    @SerializedName("is_default")  // Thêm trường is_default
+    private boolean isDefault;
+
     // Getter cho ID
     public int getId() {
         return id;
@@ -52,6 +55,10 @@ public class AddressModel {
 
     public String getProvince() {
         return province;
+    }
+
+    public boolean isDefault() {   // Getter cho is_default
+        return isDefault;
     }
 
     // Inner class User

@@ -319,7 +319,7 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    
+
                 } else {
                     showToast("Lỗi khi reset điểm.");
                 }

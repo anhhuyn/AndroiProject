@@ -1,26 +1,39 @@
 package vn.iotstar.ecoveggieapp.activities;
 
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TextView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import vn.iotstar.ecoveggieapp.R;
-import vn.iotstar.ecoveggieapp.adapters.CartAdapter;
-import vn.iotstar.ecoveggieapp.models.CartItem;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.adapters.CartAdapter;
+import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
+import vn.iotstar.ecoveggieapp.helpers.StringHelper;
+import vn.iotstar.ecoveggieapp.models.CartItemModel;
+
 public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCart;
     private CartAdapter cartAdapter;
-    private List<CartItem> cartItemList;
-    private TextView tvTotalPrice, tvTotal;
-    private CheckBox cbSelectAll;
-    private Button btnBuy;
+    private List<CartItemModel> cartItemList;
+    private static final String API_URL = "http://" + StringHelper.SERVER_IP +":9080/api/v1/cart/user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,42 +41,67 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         recyclerViewCart = findViewById(R.id.recyclerViewCart);
-        tvTotalPrice = findViewById(R.id.tvTotalPrice);
-        tvTotal = findViewById(R.id.tvTotal);
-        cbSelectAll = findViewById(R.id.cbSelectAll);
 
-        cartItemList = new ArrayList<>();
-        cartAdapter = new CartAdapter(this, cartItemList);
-
-        recyclerViewCart.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewCart.setAdapter(cartAdapter);
-
-        // Sample data
-        cartItemList.add(new CartItem("Táo đỏ nhập khẩu", "Đơn vị tính: kg", "₫950.000", "", 1, false));
-        cartItemList.add(new CartItem("Cà chua bi", "Đơn vị tính: kg", "₫150.000", "", 1, false));
-
-        cartAdapter.notifyDataSetChanged();
-
-        // Handle "Select All" functionality
-        cbSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            for (CartItem item : cartItemList) {
-                item.setSelected(isChecked);
-            }
-            cartAdapter.notifyDataSetChanged();
-            updateTotalPrice();
-        });
-
-        // Calculate total price
-        updateTotalPrice();
+        int userId = SharedPrefManager.getInstance(this).getUserId();
+        getCartItems(userId);
     }
 
-    private void updateTotalPrice() {
-        double total = 0;
-        for (CartItem item : cartItemList) {
-            if (item.isSelected()) {
-                total += 950000; // Replace with dynamic price calculation
-            }
-        }
-        tvTotalPrice.setText("₫" + total);
+
+    private void getCartItems(int userId) {
+        String url = API_URL + "?user_id=" + userId;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        cartItemList = new ArrayList<>();
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject cartItemJson = response.getJSONObject(i);
+                                JSONObject productJson = cartItemJson.getJSONObject("product");
+
+                                int id = cartItemJson.getInt("id");
+                                int productId = productJson.getInt("product_id");
+                                String productName = productJson.getString("product_name");
+                                double price = productJson.getDouble("price");
+                                int quantity = cartItemJson.getInt("quantity");
+                                String unit = productJson.getString("unit");
+
+                                List<String> images = new ArrayList<>();
+                                if (productJson.has("images")) {
+                                    JSONArray imagesArray = productJson.getJSONArray("images");
+                                    for (int j = 0; j < imagesArray.length(); j++) {
+                                        images.add(imagesArray.getString(j));
+                                    }
+                                }
+
+                                CartItemModel cartItem = new CartItemModel(id, productId, productName, price, quantity, images, unit);
+                                cartItemList.add(cartItem);
+                            }
+
+                            setupRecyclerView();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(CartActivity.this, "Lỗi phân tích dữ liệu!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        Toast.makeText(CartActivity.this, "Lỗi tải giỏ hàng!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        queue.add(jsonArrayRequest);
+    }
+
+    private void setupRecyclerView() {
+        cartAdapter = new CartAdapter(cartItemList);
+        recyclerViewCart.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewCart.setAdapter(cartAdapter);
     }
 }

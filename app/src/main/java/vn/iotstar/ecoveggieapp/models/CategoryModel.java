@@ -13,6 +13,11 @@ public class CategoryModel {
         this.productCount = productCount;
     }
 
+    public CategoryModel(String category_name) {
+        this.category_name = category_name;
+    }
+
+
     public int getCategory_id() {
         return category_id;
     }

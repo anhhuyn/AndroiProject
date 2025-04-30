@@ -8,11 +8,12 @@ public class ProductModel {
     private String description;
     private double price;
     private int instock_quantity;
-    private String category;
+    private CategoryModel category;
     private List<String> images; // Danh sách hình ảnh
     private String unit; // Thêm trường unit
 
-    public ProductModel(int product_id, String product_name, String description, double price, int instock_quantity, String category, List<String> images) {
+    public ProductModel(int product_id, String product_name, String description, double price, int instock_quantity, CategoryModel category, List<String> images)
+    {
         this.product_id = product_id;
         this.product_name = product_name;
         this.description = description;
@@ -22,7 +23,8 @@ public class ProductModel {
         this.images = images;
     }
 
-    public ProductModel(int product_id, String product_name, String description, double price, int instock_quantity, String category, List<String> images, String unit) {
+    public ProductModel(int product_id, String product_name, String description, double price, int instock_quantity, CategoryModel category, List<String> images, String unit)
+    {
         this.product_id = product_id;
         this.product_name = product_name;
         this.description = description;
@@ -54,9 +56,10 @@ public class ProductModel {
         return instock_quantity;
     }
 
-    public String getCategory() {
+    public CategoryModel getCategory() {
         return category;
     }
+
 
     public List<String> getImages() {
         return images;

@@ -1,63 +1,72 @@
 package vn.iotstar.ecoveggieapp.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import vn.iotstar.ecoveggieapp.R;
-import vn.iotstar.ecoveggieapp.models.CartItem;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
-    private Context context;
-    private List<CartItem> cartItemList;
+import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.models.CartItemModel;
 
-    public CartAdapter(Context context, List<CartItem> cartItemList) {
-        this.context = context;
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
+    private List<CartItemModel> cartItemList;
+
+    public CartAdapter(List<CartItemModel> cartItemList) {
         this.cartItemList = cartItemList;
     }
 
     @NonNull
     @Override
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_cart, parent, false);
-        return new CartViewHolder(view);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cart, parent, false);
+        return new CartViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        CartItem cartItem = cartItemList.get(position);
+        CartItemModel cartItem = cartItemList.get(position);
 
-        holder.productName.setText(cartItem.getProductName());
-        holder.productVariant.setText(cartItem.getProductVariant());
-        holder.productPrice.setText(cartItem.getProductPrice());
-        holder.productImage.setImageResource(R.drawable.placeholder_image); // Replace with image loading library like Glide or Picasso
-        holder.quantity.setText(String.valueOf(cartItem.getQuantity()));
+        // Hiển thị thông tin sản phẩm
+        holder.tvProductName.setText(cartItem.getProductName());
+        holder.tvProductPrice.setText("₫" + String.format("%.2f", cartItem.getPrice()));
+        holder.tvProductQuantity.setText(String.valueOf(cartItem.getQuantity()));
+        holder.tvProductVariant.setText("Đơn vị tính: " + cartItem.getUnit());  // Assuming getUnit() is a method in CartItemModel
 
-        holder.selectItem.setChecked(cartItem.isSelected());
 
-        holder.selectItem.setOnCheckedChangeListener((buttonView, isChecked) -> cartItem.setSelected(isChecked));
+        // Hiển thị hình ảnh sản phẩm
+        if (cartItem.getImages() != null && !cartItem.getImages().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(cartItem.getImages().get(0))
+                    .into(holder.imgProduct);
+        }
 
-        holder.minusButton.setOnClickListener(v -> {
-            int currentQuantity = cartItem.getQuantity();
-            if (currentQuantity > 1) {
-                cartItem.setQuantity(currentQuantity - 1);
-                holder.quantity.setText(String.valueOf(cartItem.getQuantity()));
-            }
+
+        holder.cbSelectItem.setChecked(false);
+        // Thêm sự kiện thay đổi số lượng
+        holder.btnPlus.setOnClickListener(v -> {
+            int quantity = cartItem.getQuantity();
+            cartItem.setQuantity(quantity + 1);
+            holder.tvProductQuantity.setText(String.valueOf(cartItem.getQuantity()));
         });
 
-        holder.plusButton.setOnClickListener(v -> {
-            int currentQuantity = cartItem.getQuantity();
-            cartItem.setQuantity(currentQuantity + 1);
-            holder.quantity.setText(String.valueOf(cartItem.getQuantity()));
+        holder.btnMinus.setOnClickListener(v -> {
+            int quantity = cartItem.getQuantity();
+            if (quantity > 1) {
+                cartItem.setQuantity(quantity - 1);
+                holder.tvProductQuantity.setText(String.valueOf(cartItem.getQuantity()));
+            } else {
+                Toast.makeText(holder.itemView.getContext(), "Số lượng không thể nhỏ hơn 1", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -67,21 +76,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     }
 
     public static class CartViewHolder extends RecyclerView.ViewHolder {
-        CheckBox selectItem;
-        ImageView productImage;
-        TextView productName, productVariant, productPrice, quantity;
-        TextView minusButton, plusButton;
+        CheckBox cbSelectItem;
+        ImageView imgProduct;
+        TextView tvProductName, tvProductPrice, tvProductQuantity, tvProductVariant;
+        TextView btnMinus, btnPlus;
 
-        public CartViewHolder(@NonNull View itemView) {
+        public CartViewHolder(View itemView) {
             super(itemView);
-            selectItem = itemView.findViewById(R.id.cbSelectItem);
-            productImage = itemView.findViewById(R.id.imgProduct);
-            productName = itemView.findViewById(R.id.tvProductName);
-            productVariant = itemView.findViewById(R.id.tvProductVariant);
-            productPrice = itemView.findViewById(R.id.tvProductPrice);
-            quantity = itemView.findViewById(R.id.txtQuantity);
-            minusButton = itemView.findViewById(R.id.btnMinus);
-            plusButton = itemView.findViewById(R.id.btnPlus);
+
+            cbSelectItem = itemView.findViewById(R.id.cbSelectItem);
+            imgProduct = itemView.findViewById(R.id.imgProduct);
+            tvProductName = itemView.findViewById(R.id.tvProductName);
+            tvProductPrice = itemView.findViewById(R.id.tvProductPrice);
+            tvProductQuantity = itemView.findViewById(R.id.txtQuantity);
+            tvProductVariant = itemView.findViewById(R.id.tvProductVariant);
+            btnMinus = itemView.findViewById(R.id.btnMinus);
+            btnPlus = itemView.findViewById(R.id.btnPlus);
         }
     }
 }

@@ -68,4 +68,7 @@ dependencies {
     implementation(libs.gsonConverter)
     implementation(libs.okhttp)
 
+    //
+    implementation(libs.osmdroid)
+
 }

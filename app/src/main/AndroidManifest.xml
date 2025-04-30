@@ -103,6 +103,21 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".activities.AddressActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.EditAddressActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.SelectAddressActivity"
+            android:exported="true">
+        </activity>
+
     </application>
 
 </manifest>

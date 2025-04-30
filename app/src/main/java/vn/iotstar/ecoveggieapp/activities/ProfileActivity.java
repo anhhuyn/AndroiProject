@@ -20,7 +20,7 @@
 
     public class ProfileActivity extends AppCompatActivity {
 
-        private LinearLayout layoutAccount, layoutHome, layoutLogout, layoutPoint;
+        private LinearLayout layoutAccount, layoutHome, layoutLogout, layoutPoint, layoutAddress;
         private ImageView editAccount, imgAvatar;
         private TextView txtUsername;
 
@@ -70,6 +70,7 @@
             txtUsername = findViewById(R.id.edtUsername);
             imgAvatar = findViewById(R.id.ImgAvatar);
             layoutPoint = findViewById(R.id.layout_point);
+            layoutAddress = findViewById(R.id.address);
         }
 
 
@@ -87,6 +88,14 @@
                     goToEditProfile();
                 }
             });
+
+            layoutAddress.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToAddress();
+                }
+            });
+
 
             layoutPoint.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -119,6 +128,11 @@
 
         private void goToPoint() {
             Intent intent = new Intent(ProfileActivity.this, PointActivity.class);
+            startActivity(intent);
+        }
+
+        private void goToAddress() {
+            Intent intent = new Intent(ProfileActivity.this, AddressActivity.class);
             startActivity(intent);
         }
 
