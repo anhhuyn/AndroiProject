@@ -7,6 +7,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -41,6 +42,12 @@ public interface ApiService {
 
     @PUT("address/{id}")
     Call<AddressModel> updateAddress(@Path("id") int id, @Body AddressModel address);
+
+    @POST("address")
+    Call<AddressModel> createAddress(@Body AddressModel address);
+
+    @DELETE("address/delete/{id}")
+    Call<Void> deleteAddress(@Path("id") int id);
 
     @GET("cart/user")
     Call<List<CartItemModel>> getCartItems(@Query("user_id") int userId);

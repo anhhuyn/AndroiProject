@@ -30,6 +30,7 @@ public class AddressActivity extends AppCompatActivity {
     private AddressAdapter addressAdapter;
     private List<AddressModel> addressList = new ArrayList<>();
     private LinearLayout layoutAdd;
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,13 @@ public class AddressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_address);
         initViews();
 
+        btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> {
+            finish(); // Kết thúc activity hiện tại, quay về màn hình trước
+        });
         int userId = SharedPrefManager.getInstance(this).getUserId();
         fetchAddresses(userId);
+
 
         setupRecyclerView();
 

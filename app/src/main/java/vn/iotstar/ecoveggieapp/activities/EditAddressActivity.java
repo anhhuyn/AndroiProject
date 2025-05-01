@@ -42,6 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.AddressAdapter;
 import vn.iotstar.ecoveggieapp.helpers.ApiService;
+import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.AddressModel;
 
@@ -49,10 +50,10 @@ public class EditAddressActivity extends AppCompatActivity {
 
 
     private EditText edtName, edtPhone, edtDetail;
-    private TextView txtProvince, btnComplete;
+    private TextView txtProvince, btnComplete, btnDelete;
     private Switch switchDefault;
     private MapView mapView;
-    private ImageView btnZoomIn, btnZoomOut;
+    private ImageView btnZoomIn, btnZoomOut, btnBack;
     private LinearLayout layout_select_address;
     private Retrofit retrofit;
     private ApiService addressApi;
@@ -76,8 +77,6 @@ public class EditAddressActivity extends AppCompatActivity {
                 .build();
 
         addressApi = retrofit.create(ApiService.class);
-
-
 
         // Nhận dữ liệu từ Intent
         addressId = getIntent().getIntExtra("addressId", -1);
@@ -148,6 +147,10 @@ public class EditAddressActivity extends AppCompatActivity {
             }
         });
 
+        btnBack.setOnClickListener(v -> {
+            finish(); // Kết thúc activity hiện tại, quay về màn hình trước
+        });
+
         layout_select_address.setOnClickListener(v -> {
             Intent intent = new Intent(EditAddressActivity.this, SelectAddressActivity.class);
             intent.putExtra("province", province);
@@ -157,17 +160,37 @@ public class EditAddressActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnComplete).setOnClickListener(v -> {
-            AddressModel updatedAddress = new AddressModel();
-            updatedAddress.setId(addressId);
-            updatedAddress.setPhone(edtPhone.getText().toString());
-            updatedAddress.setDetail(edtDetail.getText().toString());
-            updatedAddress.setWards(wards); // Dùng biến toàn cục
-            updatedAddress.setDistrict(district); // Dùng biến toàn cục
-            updatedAddress.setProvince(province); // Dùng biến toàn cục
-            updatedAddress.setDefault(switchDefault.isChecked());
+            AddressModel addressModel = new AddressModel();
+            addressModel.setPhone(edtPhone.getText().toString());
+            addressModel.setDetail(edtDetail.getText().toString());
+            addressModel.setWards(wards);
+            addressModel.setDistrict(district);
+            addressModel.setProvince(province);
+            addressModel.setDefault(switchDefault.isChecked());
 
-            updateAddress(addressId, updatedAddress);
+            int userId = SharedPrefManager.getInstance(this).getUserId();
+            AddressModel.User user = new AddressModel.User();
+            user.setUserId(userId);
+            addressModel.setUser(user);
+
+
+            if (addressId == -1) {
+                // Thêm mới địa chỉ
+                addAddress(addressModel);
+            } else {
+                // Cập nhật địa chỉ
+                addressModel.setId(addressId);
+                updateAddress(addressId, addressModel);
+            }
         });
+
+        btnDelete.setOnClickListener(v -> {
+            if (addressId != -1) {
+                deleteAddress(addressId);
+            }
+        });
+
+
 
     }
 
@@ -198,6 +221,53 @@ public class EditAddressActivity extends AppCompatActivity {
             showLocationOnMap(fullAddress);
         }
     }
+
+    private void addAddress(AddressModel newAddress) {
+        Call<AddressModel> call = addressApi.createAddress(newAddress); // Gọi API POST
+
+        call.enqueue(new Callback<AddressModel>() {
+            @Override
+            public void onResponse(Call<AddressModel> call, Response<AddressModel> response) {
+                if (response.isSuccessful()) {
+                    Log.d("AddAddress", "Thêm địa chỉ thành công!");
+                    Intent resultIntent = new Intent();
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                } else {
+                    Log.e("AddAddress", "Thêm địa chỉ thất bại: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressModel> call, Throwable t) {
+                Log.e("AddAddress", "Lỗi khi thêm địa chỉ: " + t.getMessage());
+            }
+        });
+    }
+
+    private void deleteAddress(int id) {
+        Call<Void> call = addressApi.deleteAddress(id);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("DeleteAddress", "Xóa địa chỉ thành công!");
+                    Intent resultIntent = new Intent();
+                    setResult(RESULT_OK, resultIntent);
+                    finish(); // quay lại activity trước
+                } else {
+                    Log.e("DeleteAddress", "Xóa thất bại: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("DeleteAddress", "Lỗi kết nối khi xóa: " + t.getMessage());
+            }
+        });
+    }
+
 
 
     // Gửi yêu cầu PUT tới API để cập nhật địa chỉ
@@ -275,5 +345,7 @@ public class EditAddressActivity extends AppCompatActivity {
         btnZoomIn = findViewById(R.id.btnZoomIn);
         btnZoomOut = findViewById(R.id.btnZoomOut);
         layout_select_address = findViewById(R.id.layout_select_address);
+        btnDelete = findViewById(R.id.btnDelete);
+        btnBack = findViewById(R.id.btnBack);
     }
 }

@@ -46,7 +46,7 @@ import android.os.Looper;
 public class SelectAddressActivity extends AppCompatActivity {
 
     private TextView txtTitle, txtProvince, txtDistrict, txtWards, txtDone;
-    private ImageView imgProvince, imgDistrict, imgWards;
+    private ImageView imgProvince, imgDistrict, imgWards, btnBack;
     private ListView listProvinces;
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<String> ids = new ArrayList<>();
@@ -75,6 +75,10 @@ public class SelectAddressActivity extends AppCompatActivity {
         String wards = getIntent().getStringExtra("wards");
 
         initView();
+
+        btnBack.setOnClickListener(v -> {
+            finish(); // Kết thúc activity hiện tại, quay về màn hình trước
+        });
 
         txtProvince.setOnClickListener(v -> {
             currentLevel = Level.PROVINCE;
@@ -323,6 +327,6 @@ public class SelectAddressActivity extends AppCompatActivity {
         txtDone = findViewById(R.id.txtDone);
         layoutCheckin = findViewById(R.id.layout_checkin);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+        btnBack = findViewById(R.id.btnBack);
     }
 }
