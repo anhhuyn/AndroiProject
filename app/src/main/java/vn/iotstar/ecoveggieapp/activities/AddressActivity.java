@@ -1,6 +1,8 @@
 package vn.iotstar.ecoveggieapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.*;
@@ -27,6 +29,7 @@ public class AddressActivity extends AppCompatActivity {
     private RecyclerView rvAddresses;
     private AddressAdapter addressAdapter;
     private List<AddressModel> addressList = new ArrayList<>();
+    private LinearLayout layoutAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +45,34 @@ public class AddressActivity extends AppCompatActivity {
         fetchAddresses(userId);
 
         setupRecyclerView();
+
+        layoutAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(AddressActivity.this, EditAddressActivity.class);
+            SharedPrefManager prefManager = SharedPrefManager.getInstance(this);
+            String username = prefManager.getUsername();
+
+            intent.putExtra("userName", username);
+            startActivityForResult(intent, 100);
+        });
+
+
+
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            // Gọi lại API để lấy danh sách địa chỉ mới
+            Log.d("AddressActivity", "onActivityResult gọi: requestCode=" + requestCode + ", resultCode=" + resultCode);
+            int userId = SharedPrefManager.getInstance(this).getUserId();
+            fetchAddresses(userId);
+        }
+    }
+
 
     private void initViews() {
         rvAddresses = findViewById(R.id.rvAddresses);
+        layoutAdd = findViewById(R.id.btnAddNewAddress);
     }
 
     private void setupRecyclerView() {
@@ -61,8 +88,7 @@ public class AddressActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<AddressModel>> call, Response<List<AddressModel>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    addressList = response.body();
-                    addressAdapter.updateAddressList(addressList); // Cập nhật danh sách địa chỉ trong adapter
+                    addressAdapter.updateAddressList(response.body());// Cập nhật danh sách địa chỉ trong adapter
                 } else {
                     showToast("Không thể lấy danh sách địa chỉ.");
                 }

@@ -61,6 +61,39 @@ public class AddressModel {
         return isDefault;
     }
 
+    // Setters cho các trường
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public void setWards(String wards) {
+        this.wards = wards;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
     // Inner class User
     public static class User {
         @SerializedName("user_id")
@@ -73,8 +106,16 @@ public class AddressModel {
             return userId;
         }
 
+        public void setUserId(int userId) {
+            this.userId = userId;
+        }
+
         public String getUsername() {
             return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
         }
     }
 }

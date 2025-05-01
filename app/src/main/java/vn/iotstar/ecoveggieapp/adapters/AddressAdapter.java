@@ -1,5 +1,6 @@
 package vn.iotstar.ecoveggieapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -18,13 +19,16 @@ import vn.iotstar.ecoveggieapp.models.AddressModel;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
 
-    private Context context;
+    private Activity activity;
     private List<AddressModel> addressList;
 
-    public AddressAdapter(Context context, List<AddressModel> addressList) {
-        this.context = context;
+    public AddressAdapter(Activity activity, List<AddressModel> addressList) {
+        this.activity = activity;
         this.addressList = addressList;
     }
+
+
+
 
     @NonNull
     @Override
@@ -50,7 +54,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
         // Set sự kiện click
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EditAddressActivity.class);
+            Intent intent = new Intent(activity, EditAddressActivity.class);
             intent.putExtra("addressId", address.getId());
             intent.putExtra("userName", address.getUser().getUsername());
             intent.putExtra("phone", address.getPhone());
@@ -59,7 +63,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             intent.putExtra("district", address.getDistrict());
             intent.putExtra("province", address.getProvince());
             intent.putExtra("isDefault", address.isDefault());
-            context.startActivity(intent);
+            activity.startActivityForResult(intent, 100);
+
         });
     }
 
@@ -68,10 +73,12 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         return addressList.size();
     }
 
-    public void updateAddressList(List<AddressModel> addressList) {
-        this.addressList = addressList;
+    public void updateAddressList(List<AddressModel> newList) {
+        this.addressList.clear();
+        this.addressList.addAll(newList);
         notifyDataSetChanged();
     }
+
 
     public static class AddressViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvPhone, tvDetail, tvWards, tvDefault;
