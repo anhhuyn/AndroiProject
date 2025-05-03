@@ -20,6 +20,7 @@ import retrofit2.http.Query;
 import vn.iotstar.ecoveggieapp.models.AddressModel;
 import vn.iotstar.ecoveggieapp.models.CartItemModel;
 import vn.iotstar.ecoveggieapp.models.OrderModel;
+import vn.iotstar.ecoveggieapp.models.ReviewModel;
 
 public interface ApiService {
 
@@ -48,6 +49,26 @@ public interface ApiService {
 
     @DELETE("address/delete/{id}")
     Call<Void> deleteAddress(@Path("id") int id);
+
+    @FormUrlEncoded
+    @POST("reviews/add")
+    Call<ReviewModel> addReview(
+            @Field("userId") int userId,
+            @Field("productId") int productId,
+            @Field("rating") int rating,
+            @Field("comment") String comment
+    );
+
+    @GET("reviews/product/{productId}")
+    Call<List<ReviewModel>> getReviewsByProductId(@Path("productId") int productId);
+
+    @Multipart
+    @POST("review-media/addImage")
+    Call<Void> uploadReviewImage(
+            @Part("reviewId") RequestBody reviewId,
+            @Part("mediaType") RequestBody mediaType,
+            @Part MultipartBody.Part media
+    );
 
     @GET("cart/user")
     Call<List<CartItemModel>> getCartItems(@Query("user_id") int userId);

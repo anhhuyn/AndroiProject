@@ -20,7 +20,7 @@
 
     public class ProfileActivity extends AppCompatActivity {
 
-        private LinearLayout layoutAccount, layoutHome, layoutLogout, layoutPoint, layoutAddress;
+        private LinearLayout layoutAccount, layoutHome, layoutLogout, layoutPoint, layoutAddress, layoutReview;
         private ImageView editAccount, imgAvatar;
         private TextView txtUsername;
 
@@ -72,6 +72,7 @@
             imgAvatar = findViewById(R.id.ImgAvatar);
             layoutPoint = findViewById(R.id.layout_point);
             layoutAddress = findViewById(R.id.address);
+            layoutReview = findViewById(R.id.layoutReview);
         }
 
 
@@ -80,6 +81,13 @@
                 @Override
                 public void onClick(View v) {
                     goToHome();
+                }
+            });
+
+            layoutReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    goToReview();
                 }
             });
 
@@ -125,6 +133,11 @@
                 }
             });
 
+        }
+
+        private void goToReview() {
+            Intent intent = new Intent(ProfileActivity.this, ListUserReviewActivity.class);
+            startActivity(intent);
         }
 
         private void goToPoint() {

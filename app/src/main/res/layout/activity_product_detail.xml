@@ -308,7 +308,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
-                    android:text="4.5 ★"
+                    android:text="★"
                     android:textColor="#FFB300"
                     android:textSize="14sp" />
 

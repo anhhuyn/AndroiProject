@@ -121,6 +121,21 @@
             android:exported="true">
         </activity>
 
+        <activity
+            android:name=".activities.ListUserReviewActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.AddReviewActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".activities.ReviewProductActivity"
+            android:exported="true">
+        </activity>
+
     </application>
 
 </manifest>

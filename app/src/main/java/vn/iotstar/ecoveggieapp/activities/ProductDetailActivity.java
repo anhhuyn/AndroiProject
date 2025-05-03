@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,7 +45,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TextView productName, productPrice, productDescription, sellerRating, productSale, productCount, productUnit;
     private TextView btnAddToCart, btnBuyNow;
-    private LinearLayout bottomNavigation;
+    private LinearLayout bottomNavigation, layoutReview;
     private ProductModel product;
     private RecyclerView recyclerViewThumbnails;
     private ImageView btnBack;
@@ -66,10 +65,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_product_detail);
 
-        // Nhận product_id từ Intent
         productId = getIntent().getIntExtra("product_id", -1);
-
-
         //Ánh xạ
         initView();
 
@@ -83,6 +79,13 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnBuyNow.setOnClickListener(v -> {
             showBuyNowBottomSheet();
         });
+
+        layoutReview.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductDetailActivity.this, ReviewProductActivity.class);
+            intent.putExtra("productId", productId);
+            startActivity(intent);
+        });
+
 
     }
 
@@ -101,7 +104,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         productUnit = findViewById(R.id.productUnit);
         recyclerViewThumbnails = findViewById(R.id.recyclerViewThumbnails);
         btnBack = findViewById(R.id.btnBack);
-
+        layoutReview = findViewById(R.id.layoutReview);
     }
 
     private void fetchProductDetail(int productId) {

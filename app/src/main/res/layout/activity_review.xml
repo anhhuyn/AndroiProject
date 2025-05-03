@@ -1,0 +1,180 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray">
+
+    <!-- Toolbar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_left_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đánh giá của tôi"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <!-- Thông tin người dùng -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_avatar"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_background" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingStart="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:id="@+id/txtCountReview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3"
+                    android:textStyle="bold"
+                    android:textColor="#000"
+                    android:textSize="16sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đánh giá"
+                    android:textSize="12sp"
+                    android:textColor="#888888"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Dòng phân cách -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE" />
+
+    <!-- Tab Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tabChuaDanhGia"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Chưa đánh giá"
+            android:textColor="@color/green_main"
+            android:textStyle="bold"
+            android:paddingTop="10dp"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="|"
+            android:textColor="#666666"
+            android:paddingTop="10dp" />
+
+        <TextView
+            android:id="@+id/tabDaDanhGia"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Đã đánh giá"
+            android:textColor="#666666"
+            android:paddingTop="10dp" />
+    </LinearLayout>
+
+
+    <!-- Dòng phân cách -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/gray" />
+
+
+    <!-- Khuyến khích đánh giá -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+    android:padding="12dp"
+    android:background="@drawable/bg_rounded_white"
+    android:orientation="horizontal"
+    android:gravity="center" >
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_accumulate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" Đánh giá tất cả sản phẩm và nhận đến "
+        android:textColor="#000000"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="200 Xu"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="13sp"
+        android:textStyle="bold"/>
+</LinearLayout>
+
+    <!-- Dòng phân cách -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/gray" />
+
+    <!-- RecyclerView (danh sách đánh giá) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerReview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>
