@@ -94,4 +94,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             btnPlus = itemView.findViewById(R.id.btnPlus);
         }
     }
+    public void deleteItem(int position) {
+        cartItemList.remove(position);
+        notifyItemRemoved(position);
+    }
+
 }

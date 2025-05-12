@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import android.graphics.Canvas;
+import androidx.core.view.ViewCompat;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -103,5 +107,48 @@ public class CartActivity extends AppCompatActivity {
         cartAdapter = new CartAdapter(cartItemList);
         recyclerViewCart.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCart.setAdapter(cartAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                int cartItemId = cartItemList.get(position).getId(); // Lấy đúng ID cart item
+
+                String deleteUrl = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/cart/item/" + cartItemId;
+
+                RequestQueue queue = Volley.newRequestQueue(CartActivity.this);
+                com.android.volley.toolbox.StringRequest deleteRequest = new com.android.volley.toolbox.StringRequest(
+                        Request.Method.DELETE,
+                        deleteUrl,
+                        response -> {
+                            cartAdapter.deleteItem(position); // Xóa item trong UI
+                            Toast.makeText(CartActivity.this, "Đã xóa sản phẩm", Toast.LENGTH_SHORT).show();
+                        },
+                        error -> {
+                            Toast.makeText(CartActivity.this, "Lỗi xóa sản phẩm", Toast.LENGTH_SHORT).show();
+                            cartAdapter.notifyItemChanged(position); // Khôi phục nếu lỗi
+                        }
+                );
+
+                queue.add(deleteRequest);
+            }
+
+
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                    float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                View foregroundView = viewHolder.itemView.findViewById(R.id.cardItemCart);
+                ViewCompat.setTranslationX(foregroundView, dX);
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(recyclerViewCart);
+
     }
+
 }

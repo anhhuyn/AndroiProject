@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -254,5 +255,73 @@ public class ProductDetailActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void showAddToCartBottomSheet() {
+        BottomSheetDialog dialog = new BottomSheetDialog(this);
+
+        // Inflate layout bottom sheet
+        View view = getLayoutInflater().inflate(R.layout.activity_product_to_cart, null);
+        dialog.setContentView(view);
+
+        // Khởi tạo các view
+        ImageView imgProduct = view.findViewById(R.id.image_product);
+        TextView tvPrice = view.findViewById(R.id.text_price);
+        TextView tvStock = view.findViewById(R.id.text_stock);
+        TextView txtQuantity = view.findViewById(R.id.txtQuantity);
+        TextView btnMinus = view.findViewById(R.id.btnMinus);
+        TextView btnPlus = view.findViewById(R.id.btnPlus);
+        Button btnAddToCart = view.findViewById(R.id.button_add_to_cart);
+
+        // Thiết lập giá và kho
+        tvPrice.setText("₫" + price);
+        tvStock.setText("Kho: " + stock);
+
+        // Hiển thị hình ảnh sản phẩm
+        Glide.with(this)
+                .load(imageUrl)
+                .into(imgProduct);
+
+        // Xử lý giảm số lượng
+        btnMinus.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(txtQuantity.getText().toString());
+            if (quantity > 1) {
+                quantity--;
+                txtQuantity.setText(String.valueOf(quantity));
+            }
+        });
+
+        // Xử lý tăng số lượng
+        btnPlus.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(txtQuantity.getText().toString());
+            if (quantity < stock) {
+                quantity++;
+                txtQuantity.setText(String.valueOf(quantity));
+            }
+        });
+
+        // Xử lý thêm vào giỏ hàng
+        btnAddToCart.setOnClickListener(v -> {
+            int quantity = Integer.parseInt(txtQuantity.getText().toString());
+
+            // Tạo item giỏ hàng
+            ArrayList<CheckoutItemModel> itemList = new ArrayList<>();
+            itemList.add(new CheckoutItemModel(
+                    productId,
+                    productName.getText().toString(),
+                    unit,
+                    price,
+                    quantity,
+                    imageUrl
+            ));
+
+            // Cập nhật giỏ hàng trong SharedPreferences hoặc sử dụng API thêm sản phẩm vào giỏ
+            // SharedPreferences code hoặc xử lý thêm vào giỏ hàng ở đây
+            Toast.makeText(this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+
+            dialog.dismiss();  // Đóng bottom sheet sau khi thêm vào giỏ
+        });
+
+        dialog.setCancelable(true);
+        dialog.show();
+    }
 }
 
