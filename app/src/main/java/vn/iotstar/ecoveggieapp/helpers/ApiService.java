@@ -1,6 +1,7 @@
 package vn.iotstar.ecoveggieapp.helpers;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -20,6 +21,7 @@ import retrofit2.http.Query;
 import vn.iotstar.ecoveggieapp.models.AddressModel;
 import vn.iotstar.ecoveggieapp.models.CartItemModel;
 import vn.iotstar.ecoveggieapp.models.OrderModel;
+import vn.iotstar.ecoveggieapp.models.PendingOrder;
 import vn.iotstar.ecoveggieapp.models.ReviewModel;
 
 public interface ApiService {
@@ -97,5 +99,21 @@ public interface ApiService {
     @POST("points/reset")
     Call<ResponseBody> resetTotalPoints(@Query("user_id") int userId);
 
+    @GET("orders/pending/{customerId}")
+    Call<List<PendingOrder>> getPendingOrders(@Path("customerId") int customerId);
 
+    @GET("orders/waiting_delivery/{customerId}")
+    Call<List<PendingOrder>> getWaitingDeliveryOrders(@Path("customerId") int customerId);
+
+    @GET("orders/pending_ship/{customerId}")
+    Call<List<PendingOrder>> getShippingOrders(@Path("customerId") int customerId);
+
+    @GET("orders/delivered/{customerId}")
+    Call<List<PendingOrder>> getDeliveredOrders(@Path("customerId") int customerId);
+
+    @GET("orders/canceled/{customerId}")
+    Call<List<PendingOrder>> getCanceledOrders(@Path("customerId") int customerId);
+
+    @GET("order/detail/{orderId}")
+    Call<List<Map<String, Object>>> getOrderDetails(@Path("orderId") int orderId);
 }

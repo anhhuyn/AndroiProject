@@ -19,6 +19,8 @@ public class CheckoutItemModel implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    public CheckoutItemModel() {}
+
     // Getter và Setter cho productId
     public int getProductId() {
         return productId;
@@ -48,4 +50,25 @@ public class CheckoutItemModel implements Serializable {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 }

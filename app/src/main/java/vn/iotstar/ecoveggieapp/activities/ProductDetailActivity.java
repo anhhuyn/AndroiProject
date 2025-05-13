@@ -1,6 +1,7 @@
 package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -28,7 +30,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.android.volley.Response;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -37,6 +42,7 @@ import vn.iotstar.ecoveggieapp.R;
 
 import vn.iotstar.ecoveggieapp.adapters.ProductImageAdapter;
 import vn.iotstar.ecoveggieapp.adapters.ThumbnailAdapter;
+import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.CheckoutItemModel;
 import vn.iotstar.ecoveggieapp.models.ProductModel;
@@ -80,13 +86,15 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnBuyNow.setOnClickListener(v -> {
             showBuyNowBottomSheet();
         });
+        btnAddToCart.setOnClickListener(v -> {
+            showAddToCartBottomSheet();  // Gọi phương thức hiển thị BottomSheet
+        });
 
         layoutReview.setOnClickListener(v -> {
             Intent intent = new Intent(ProductDetailActivity.this, ReviewProductActivity.class);
             intent.putExtra("productId", productId);
             startActivity(intent);
         });
-
 
     }
 
@@ -262,25 +270,25 @@ public class ProductDetailActivity extends AppCompatActivity {
         View view = getLayoutInflater().inflate(R.layout.activity_product_to_cart, null);
         dialog.setContentView(view);
 
-        // Khởi tạo các view
+        // Initialize views
         ImageView imgProduct = view.findViewById(R.id.image_product);
         TextView tvPrice = view.findViewById(R.id.text_price);
         TextView tvStock = view.findViewById(R.id.text_stock);
         TextView txtQuantity = view.findViewById(R.id.txtQuantity);
         TextView btnMinus = view.findViewById(R.id.btnMinus);
         TextView btnPlus = view.findViewById(R.id.btnPlus);
-        Button btnAddToCart = view.findViewById(R.id.button_add_to_cart);
+        TextView btnAddToCart = view.findViewById(R.id.button_add_to_cart);
 
-        // Thiết lập giá và kho
+        // Set product details
         tvPrice.setText("₫" + price);
         tvStock.setText("Kho: " + stock);
 
-        // Hiển thị hình ảnh sản phẩm
+        // Load product image using Glide
         Glide.with(this)
                 .load(imageUrl)
                 .into(imgProduct);
 
-        // Xử lý giảm số lượng
+        // Handle quantity adjustments
         btnMinus.setOnClickListener(v -> {
             int quantity = Integer.parseInt(txtQuantity.getText().toString());
             if (quantity > 1) {
@@ -289,7 +297,6 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Xử lý tăng số lượng
         btnPlus.setOnClickListener(v -> {
             int quantity = Integer.parseInt(txtQuantity.getText().toString());
             if (quantity < stock) {
@@ -298,30 +305,35 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Xử lý thêm vào giỏ hàng
+        // Handle adding to cart and calling API
         btnAddToCart.setOnClickListener(v -> {
             int quantity = Integer.parseInt(txtQuantity.getText().toString());
+            int userId = SharedPrefManager.getInstance(this).getUserId();
 
-            // Tạo item giỏ hàng
-            ArrayList<CheckoutItemModel> itemList = new ArrayList<>();
-            itemList.add(new CheckoutItemModel(
-                    productId,
-                    productName.getText().toString(),
-                    unit,
-                    price,
-                    quantity,
-                    imageUrl
-            ));
+            // Create the API URL
+            String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/cart/add?user_id=" + userId + "&product_id=" + productId + "&quantity=" + quantity;
 
-            // Cập nhật giỏ hàng trong SharedPreferences hoặc sử dụng API thêm sản phẩm vào giỏ
-            // SharedPreferences code hoặc xử lý thêm vào giỏ hàng ở đây
-            Toast.makeText(this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+            // Create the request
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                    response -> {
+                        // Handle success
+                        Toast.makeText(ProductDetailActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    },
+                    error -> {
+                        // Handle error
+                        Toast.makeText(ProductDetailActivity.this, "Lỗi khi thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                        error.printStackTrace();
+                    });
 
-            dialog.dismiss();  // Đóng bottom sheet sau khi thêm vào giỏ
+            // Add the request to the Volley request queue
+            RequestQueue queue = Volley.newRequestQueue(ProductDetailActivity.this);
+            queue.add(stringRequest);
         });
 
         dialog.setCancelable(true);
         dialog.show();
     }
+
 }
 

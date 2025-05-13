@@ -1,8 +1,13 @@
 package vn.iotstar.ecoveggieapp.activities;
 
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,12 +37,16 @@ import vn.iotstar.ecoveggieapp.adapters.CartAdapter;
 import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.CartItemModel;
+import vn.iotstar.ecoveggieapp.models.CheckoutItemModel;
 
 public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCart;
     private CartAdapter cartAdapter;
     private List<CartItemModel> cartItemList;
     private static final String API_URL = "http://" + StringHelper.SERVER_IP +":9080/api/v1/cart/user";
+    private TextView tvTotalPrice, btnOrder; /////
+    private CheckBox cbSelectAll; ///
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +54,73 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         recyclerViewCart = findViewById(R.id.recyclerViewCart);
+        tvTotalPrice = findViewById(R.id.tvTotalPrice); ///////
+        cbSelectAll = findViewById(R.id.cbSelectAll);
+        btnOrder = findViewById(R.id.btnOrder);/////
+        btnBack = findViewById(R.id.btnBack);
 
         int userId = SharedPrefManager.getInstance(this).getUserId();
         getCartItems(userId);
+
+        btnBack.setOnClickListener(v -> {
+            finish(); // Quay lại activity trước đó
+        });
+
+        cbSelectAll.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            cartAdapter.selectAll(isChecked);
+        });
+
+        btnOrder.setOnClickListener(v -> {
+            ArrayList<CartItemModel> selectedItems = new ArrayList<>(cartAdapter.getSelectedItems());
+
+            if (selectedItems.isEmpty()) {
+                Toast.makeText(this, "Vui lòng chọn ít nhất 1 sản phẩm", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ArrayList<CheckoutItemModel> checkoutItems = new ArrayList<>();
+            for (CartItemModel cartItem : selectedItems) {
+                String imageUrl = cartItem.getImages() != null && !cartItem.getImages().isEmpty()
+                        ? cartItem.getImages().get(0)
+                        : "";
+
+                CheckoutItemModel checkoutItem = new CheckoutItemModel(
+                        cartItem.getProductId(),
+                        cartItem.getProductName(),
+                        cartItem.getUnit(),
+                        cartItem.getPrice(),
+                        cartItem.getQuantity(),
+                        imageUrl
+                );
+
+                checkoutItems.add(checkoutItem);
+            }
+
+            Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+            intent.putExtra("checkout_items", checkoutItems);
+            startActivity(intent);
+        });
+
+
+
     }
+
+    private void updateTotalPrice() {
+        double total = 0;
+        if (cartAdapter != null) {
+            List<CartItemModel> selectedItems = cartAdapter.getSelectedItems();
+            for (CartItemModel item : selectedItems) {
+                total += item.getPrice() * item.getQuantity();
+            }
+        }
+        tvTotalPrice.setText("₫" + String.format("%.2f", total));
+    }
+////////
 
 
     private void getCartItems(int userId) {
         String url = API_URL + "?user_id=" + userId;
-
         RequestQueue queue = Volley.newRequestQueue(this);
-
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -86,6 +151,7 @@ public class CartActivity extends AppCompatActivity {
                             }
 
                             setupRecyclerView();
+                            updateTotalPrice();/////
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(CartActivity.this, "Lỗi phân tích dữ liệu!", Toast.LENGTH_SHORT).show();
@@ -107,6 +173,15 @@ public class CartActivity extends AppCompatActivity {
         cartAdapter = new CartAdapter(cartItemList);
         recyclerViewCart.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewCart.setAdapter(cartAdapter);
+
+        /////
+        cartAdapter.setOnCartChangeListener(new CartAdapter.OnCartChangeListener() {
+            @Override
+            public void onCartChanged() {
+                updateTotalPrice();
+            }
+        });////
+
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -135,6 +210,7 @@ public class CartActivity extends AppCompatActivity {
                 );
 
                 queue.add(deleteRequest);
+                updateTotalPrice();///
             }
 
 

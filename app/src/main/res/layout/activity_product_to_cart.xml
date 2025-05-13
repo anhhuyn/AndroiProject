@@ -7,6 +7,22 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Đóng"
+            android:clickable="true"
+            android:focusable="true" />
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="103dp"
@@ -36,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="₫36.500 - ₫87.000"
+                android:text="₫87.000"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -108,20 +124,22 @@
                 android:text="1"
                 android:textSize="16sp"/>
 
+            <TextView
+                android:id="@+id/btnPlus"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="#555555"
+                android:textSize="25sp" />
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/btnPlus"
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="+"
-            android:textColor="#555555"
-            android:textSize="25sp" />
+
     </LinearLayout>
 
     <!-- Add to Cart Button -->
-    <Button
+    <TextView
         android:id="@+id/button_add_to_cart"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -129,6 +147,8 @@
         android:textAllCaps="false"
         android:textSize="16sp"
         android:backgroundTint="@android:color/holo_red_dark"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:background="@android:color/holo_red_dark" />
 
 </LinearLayout>

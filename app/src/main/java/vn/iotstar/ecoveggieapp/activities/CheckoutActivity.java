@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -35,8 +36,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -149,7 +152,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 showToast("Vui lòng chọn phương thức thanh toán");
                 return;
             }
-
             double total = getTotalAmount();
             createOrder(userId, total - (total * 0.10), selectedPaymentMethod, "Pending", userNote, addressId);
         });
@@ -204,9 +206,9 @@ public class CheckoutActivity extends AppCompatActivity {
                             OrderModel order = response.body();
                             int orderId = order.getId(); // Lấy order_id từ phản hồi
                             createOrderDetails(orderId);
-                           // đặt lại point = 0
+                            // đặt lại point = 0
                             if (switchPoint.isChecked()) {
-                                resetPointsAfterOrder(customerId);
+                                deductUsedPoints(customerId, total);
                             }
 
                         } else {
@@ -313,25 +315,6 @@ public class CheckoutActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void resetPointsAfterOrder(int userId) {
-        ApiService apiService = getApiService();
-        apiService.resetTotalPoints(userId).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-
-                } else {
-                    showToast("Lỗi khi reset điểm.");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                showToast("Lỗi kết nối khi reset điểm: " + t.getMessage());
-            }
-        });
-    }
-
 
     private ApiService getApiService() {
         return new Retrofit.Builder()
@@ -344,4 +327,23 @@ public class CheckoutActivity extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+    private void deductUsedPoints(int userId, int usedPoint) {
+        String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/points/update";
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> Log.d("POINT", "Điểm đã được trừ sau khi đặt hàng"),
+                error -> Log.e("POINT", "Lỗi trừ điểm: " + error.getMessage())
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                int newPoint = total - usedPoint;
+                params.put("user_id", String.valueOf(userId));
+                params.put("total_points", String.valueOf(newPoint));
+                return params;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
+    }
+
 }

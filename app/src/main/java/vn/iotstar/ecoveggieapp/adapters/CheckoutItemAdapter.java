@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import vn.iotstar.ecoveggieapp.R;
@@ -20,11 +21,24 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
 
     private Context context;
     private List<CheckoutItemModel> itemList;
+    private OnItemClickListener listener;
+
 
     public CheckoutItemAdapter(Context context, List<CheckoutItemModel> itemList) {
         this.context = context;
         this.itemList = itemList;
     }
+    // Interface để xử lý click
+    public interface OnItemClickListener {
+        void onItemClick(CheckoutItemModel item);
+    }
+
+    public CheckoutItemAdapter(Context context, List<CheckoutItemModel> itemList, OnItemClickListener listener) {
+        this.context = context;
+        this.itemList = itemList;
+        this.listener = listener;
+    }
+
 
     @NonNull
     @Override
@@ -33,10 +47,12 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
         return new ViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CheckoutItemModel item = itemList.get(position);
-
+        holder.bind(item, listener);
         holder.txtProductName.setText(item.getProductName());
         holder.txtUnit.setText("Đơn vị tính: " + item.getUnit());
         holder.tvGia.setText("₫" + item.getPrice());
@@ -65,6 +81,14 @@ public class CheckoutItemAdapter extends RecyclerView.Adapter<CheckoutItemAdapte
             tvGia = itemView.findViewById(R.id.tvGia);
             tvSoLuong = itemView.findViewById(R.id.tvSoLuong);
         }
+        public void bind(final CheckoutItemModel item, final OnItemClickListener listener) {
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(item);
+                }
+            });
+        }
+
     }
 }
 

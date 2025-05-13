@@ -55,11 +55,9 @@ public class PointActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         imgPoint = findViewById(R.id.imgPoint);
 
-
         btnBack.setOnClickListener(v -> {
             finish(); // Quay lại activity trước đó
         });
-
 
         // Danh sách layout 7 ngày
         dayLayouts = Arrays.asList(
@@ -77,14 +75,10 @@ public class PointActivity extends AppCompatActivity {
         btnReceive.setOnClickListener(v -> {
             updateUserPoint(); // Gọi hàm xử lý cập nhật điểm
         });
-
-
     }
-
     private void updateUserPoint() {
         int userId = SharedPrefManager.getInstance(this).getUserId();
         int currentPoint = Integer.parseInt(txtTotalPoint.getText().toString());
-
 
         if (countDay >= 0 && countDay <= 2 || countDay ==6) {
             newPoint = currentPoint + 100;
@@ -95,13 +89,10 @@ public class PointActivity extends AppCompatActivity {
         } else {
             newPoint = 0;
         }
-
-
         String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/points/update";
-
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
-
+                    fetchPointData(userId);
                 },
                 error -> {
                     Toast.makeText(this, "Lỗi khi nhận điểm", Toast.LENGTH_SHORT).show();
@@ -114,18 +105,14 @@ public class PointActivity extends AppCompatActivity {
                 return params;
             }
         };
-
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
-        fetchPointData(userId);
         Animation scaleUp = AnimationUtils.loadAnimation(this, R.anim.scale_up);
         imgPoint.startAnimation(scaleUp);
     }
 
-
     private void fetchPointData(int userId) {
         String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/points/"+userId; // thay URL thật
-
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -158,7 +145,6 @@ public class PointActivity extends AppCompatActivity {
                                     btnReceive.setBackgroundColor(Color.GRAY);
                                 }
                             }
-
                         } else {
                             Toast.makeText(this, "Không có dữ liệu điểm", Toast.LENGTH_SHORT).show();
                         }
@@ -168,7 +154,6 @@ public class PointActivity extends AppCompatActivity {
                     }
                 },
                 error -> Toast.makeText(this, "Lỗi kết nối API", Toast.LENGTH_SHORT).show());
-
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
     }
