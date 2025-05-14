@@ -1,73 +1,67 @@
 package vn.iotstar.ecoveggieapp.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.TextView;
+import android.widget.VideoView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
+
 import vn.iotstar.ecoveggieapp.R;
-import vn.iotstar.ecoveggieapp.adapters.BlogAdapter;
-import vn.iotstar.ecoveggieapp.adapters.VideoAdapter;
-import vn.iotstar.ecoveggieapp.models.BlogModel;
-import vn.iotstar.ecoveggieapp.models.VideoModel;
 
 public class StoreActivity extends AppCompatActivity {
-    private RecyclerView recyclerBlog, recyclerVideo;
-    private BlogAdapter blogAdapter;
-    private VideoAdapter videoAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
 
-        recyclerBlog = findViewById(R.id.recyclerBlog);
-        recyclerVideo = findViewById(R.id.recyclerVideo);
+        // === Thiết lập icon và màu cho Bottom Navigation ===
 
-        // Cấu hình danh sách blog
-        recyclerBlog.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerBlog.setHasFixedSize(true);
-        blogAdapter = new BlogAdapter(this, getSampleBlogs());
-        recyclerBlog.setAdapter(blogAdapter);
+        // 1. Cửa hàng (đang active)
+        ImageView iconStore = findViewById(R.id.icon_store);
+        TextView textStore = findViewById(R.id.text_store);
+        iconStore.setImageResource(R.drawable.ic_store_green); // icon màu xanh
+        textStore.setTextColor(getResources().getColor(R.color.green_main));
 
-        // Cấu hình danh sách video
-        recyclerVideo.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerVideo.setHasFixedSize(true);
-        videoAdapter = new VideoAdapter(this, getSampleVideos());
-        recyclerVideo.setAdapter(videoAdapter);
-    }
+        // 2. Trang chủ (không active)
+        ImageView iconHome = findViewById(R.id.icon_home);
+        TextView txtHome = findViewById(R.id.txtHome);
+        iconHome.setImageResource(R.drawable.ic_home); // icon màu xám
 
-    private List<BlogModel> getSampleBlogs() {
-        List<BlogModel> blogs = new ArrayList<>();
-        blogs.add(new BlogModel(
-                "Lợi ích của nông sản sạch",
-                "Nông sản sạch giúp bảo vệ sức khỏe và môi trường.",
-                "https://cdn.pixabay.com/photo/2016/11/18/15/45/agriculture-1836170_960_720.jpg",
-                "2025-03-13"
-        ));
-        blogs.add(new BlogModel(
-                "Cách chọn rau củ an toàn",
-                "Hướng dẫn chọn rau không hóa chất và đảm bảo dinh dưỡng.",
-                "https://cdn.pixabay.com/photo/2018/07/12/08/57/vegetables-3539263_960_720.jpg",
-                "2025-03-13"
-        ));
-        return blogs;
-    }
+        // === Thiết lập VideoView ===
+        VideoView videoView = findViewById(R.id.videoView);
+        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.store_intro;
+        Uri uri = Uri.parse(videoPath);
+        videoView.setVideoURI(uri);
+        videoView.start(); // Tự động phát video
 
-    private List<VideoModel> getSampleVideos() {
-        List<VideoModel> videos = new ArrayList<>();
-        videos.add(new VideoModel(
-                "Hướng dẫn trồng rau sạch tại nhà",
-                "https://img.youtube.com/vi/abc123/maxresdefault.jpg",
-                "https://www.youtube.com/watch?v=abc123"
-        ));
-        videos.add(new VideoModel(
-                "Cách nhận biết thực phẩm hữu cơ",
-                "https://img.youtube.com/vi/def456/maxresdefault.jpg",
-                "https://www.youtube.com/watch?v=def456"
-        ));
-        return videos;
+        // Thêm MediaController cho điều khiển video
+        MediaController mediaController = new MediaController(this);
+        videoView.setMediaController(mediaController);
+        mediaController.setAnchorView(videoView);
+
+        // Khi video phát xong, tự động phát lại
+        videoView.setOnCompletionListener(mp -> videoView.start());
+
+        // === Xử lý sự kiện cho các mục trong thanh điều hướng ===
+        findViewById(R.id.icon_home).setOnClickListener(v -> {
+            startActivity(new Intent(StoreActivity.this, HomeActivity.class));
+            finish();
+        });
+
+        findViewById(R.id.layout_category).setOnClickListener(v -> {
+            startActivity(new Intent(StoreActivity.this, CategoryActivity.class));
+            finish();
+        });
+
+        findViewById(R.id.layout_profile).setOnClickListener(v -> {
+            startActivity(new Intent(StoreActivity.this, ProfileActivity.class));
+            finish();
+        });
     }
 }

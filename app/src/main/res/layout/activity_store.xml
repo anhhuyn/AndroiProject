@@ -8,95 +8,123 @@
     android:background="@color/gray"
     tools:context=".activities.StoreActivity">
 
-    <!-- Guideline để chia bố cục cân đối -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        />
-
-    <!-- Tiêu đề -->
+    <!-- Nội dung chính cuộn được -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="60dp"> <!-- Để tránh bị che bởi thanh điều hướng -->
+            android:orientation="vertical">
 
+            <!-- Video Cửa Hàng -->
             <TextView
-                android:id="@+id/txtStoreTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cửa Hàng Nông Sản Sạch"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
                 android:gravity="center"
-                android:padding="16dp"
-                android:layout_gravity="center_horizontal" />
+                android:paddingBottom="12dp"
+                android:text="Giới Thiệu Cửa Hàng"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/imgStore"
+            <VideoView
+                android:id="@+id/videoView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/store_image" />
+                android:layout_marginBottom="16dp"/>
 
-            <TextView
-                android:id="@+id/txtStoreInfo"
+            <!-- Tiêu đề -->
+
+            <!-- Thông tin cửa hàng -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chúng tôi chuyên cung cấp nông sản sạch, đảm bảo chất lượng, an toàn cho sức khỏe."
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Chúng tôi chuyên cung cấp nông sản sạch từ các trang trại hữu cơ, hướng đến sức khỏe người tiêu dùng và bảo vệ môi trường."
+                        android:textSize="16sp"
+                        android:textColor="@android:color/darker_gray" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Sứ mệnh -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌱 Sứ mệnh và Tầm nhìn"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Xây dựng cầu nối giữa người nông dân và người tiêu dùng, giúp tiếp cận thực phẩm sạch một cách thuận tiện và minh bạch."
                 android:textSize="16sp"
-                android:textColor="@android:color/darker_gray"
-                android:padding="16dp" />
+                android:layout_marginBottom="16dp" />
 
+            <!-- Nguồn gốc -->
             <TextView
-                android:id="@+id/txtBlogTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bài Blog"
-                android:textSize="18sp"
+                android:text="🏡 Nguồn gốc nông sản"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:padding="8dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerBlog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:nestedScrollingEnabled="false" />
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp" />
 
             <TextView
-                android:id="@+id/txtVideoTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Video Liên Quan"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:padding="8dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerVideo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:nestedScrollingEnabled="false" />
+                android:text="Sản phẩm được thu hoạch trực tiếp từ các hợp tác xã tại Lâm Đồng, Đồng Tháp... với quy trình chuẩn VietGAP và canh tác hữu cơ."
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
 
+            <!-- Dịch vụ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📦 Dịch vụ nổi bật"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Giao hàng nhanh trong ngày\n• Đổi trả trong 24h nếu không hài lòng\n• Hỗ trợ tư vấn tận tình\n• Thanh toán đa dạng"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Liên hệ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📍 Liên hệ"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Địa chỉ: 123 Đường Nông Sản, TP. Hồ Chí Minh\nSĐT: 0909 123 456\nEmail: info@ecoveggie.vn\nFacebook: fb.com/ecoveggie"
+                android:textSize="16sp"
+                android:layout_marginBottom="24dp" />
         </LinearLayout>
     </ScrollView>
 
@@ -121,14 +149,15 @@
                 android:id="@+id/icon_home"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_home" />
+                android:contentDescription="Trang chủ"
+                android:src="@drawable/ic_home_green" />
             <TextView
                 android:id="@+id/txtHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trang chủ"
                 android:textSize="13sp"
-                android:textColor="#696969"
+                android:textColor="@color/green_main"
                 android:gravity="center" />
         </LinearLayout>
 
@@ -139,18 +168,18 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center_horizontal">
-
             <ImageView
                 android:id="@+id/icon_store"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_store_green" />
+                android:src="@drawable/ic_store"
+                android:contentDescription="Cửa hàng" />
             <TextView
                 android:id="@+id/text_store"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cửa hàng"
-                android:textColor="@color/green_main"
+                android:textColor="#696969"
                 android:textSize="13sp"
                 android:gravity="center" />
         </LinearLayout>
@@ -162,12 +191,12 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center_horizontal">
-
             <ImageView
                 android:id="@+id/icon_category"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_category" />
+                android:src="@drawable/ic_category"
+                android:contentDescription="Danh mục" />
             <TextView
                 android:id="@+id/text_category"
                 android:layout_width="wrap_content"
@@ -185,12 +214,12 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center_horizontal">
-
             <ImageView
                 android:id="@+id/icon_profile"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_profile" />
+                android:src="@drawable/ic_profile"
+                android:contentDescription="Tôi" />
             <TextView
                 android:id="@+id/text_profile"
                 android:layout_width="wrap_content"
@@ -200,6 +229,7 @@
                 android:textColor="#696969"
                 android:gravity="center" />
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
