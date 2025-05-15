@@ -131,6 +131,11 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        txtLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+
         layoutCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
