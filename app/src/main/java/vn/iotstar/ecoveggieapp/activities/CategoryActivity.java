@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +41,7 @@ public class CategoryActivity extends AppCompatActivity {
     private static final String BASE_URL = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/categories";
     private RequestQueue requestQueue;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class CategoryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewCategory);
         edtSearch = findViewById(R.id.edtSearchBar);
         ImageView btnBack = findViewById(R.id.btnBack);
+
 
         btnBack.setOnClickListener(view -> navigateToHome());
     }

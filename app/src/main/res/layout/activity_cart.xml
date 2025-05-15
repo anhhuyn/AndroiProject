@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray">
 
     <!-- Thanh tiêu đề với nút quay lại -->
     <LinearLayout
@@ -11,7 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="@color/white">
 
         <ImageButton
             android:id="@+id/btnBack"
@@ -30,23 +32,31 @@
             android:layout_weight="1"
             android:text="Giỏ hàng"
             android:textSize="20sp"
-            android:gravity="center"/>
+           />
     </LinearLayout>
-
 
     <!-- Danh sách sản phẩm -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:clipToPadding="false" />
+    <include
+        android:id="@+id/layoutEmptyCart"
+        layout="@layout/layout_empty_cart"
+        android:visibility="gone"/>
+
+
     <LinearLayout
+        android:id="@+id/layoutBottom"
         android:orientation="horizontal"
         android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:background="@color/white">
 
         <!-- Checkbox + Tất cả -->
 
@@ -55,8 +65,6 @@
             android:id="@+id/cbSelectAll"
             android:layout_width="83dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/checkbox_custom"
-            android:buttonTint="@android:color/white"
             android:text="Tất cả"
             android:textSize="14sp" />
 

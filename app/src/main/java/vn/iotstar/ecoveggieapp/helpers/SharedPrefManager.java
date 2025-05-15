@@ -17,6 +17,18 @@ public class SharedPrefManager {
     private static SharedPrefManager mInstance;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
+    private static final String KEY_REMEMBER = "key_remember";
+
+    public void setRemembered(boolean isRemembered) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_REMEMBER, isRemembered);
+        editor.apply();
+    }
+
+    public boolean isRemembered() {
+        return sharedPreferences.getBoolean(KEY_REMEMBER, false);
+    }
+
 
     private SharedPrefManager(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);

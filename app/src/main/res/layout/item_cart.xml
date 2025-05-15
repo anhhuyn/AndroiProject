@@ -2,12 +2,15 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="2dp">
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="4dp"
+    android:elevation="2dp"
+    >
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        >
 
         <!-- Nút Xóa nằm bên dưới -->
         <LinearLayout
@@ -24,7 +27,7 @@
             <LinearLayout
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:background="#FF3D00"
+                android:background="@android:color/holo_red_dark"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -39,8 +42,7 @@
             </LinearLayout>
         </LinearLayout>
 
-
-        <!-- Đây là phần foreground để swipe -->
+        <!-- Phần foreground -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardItemCart"
             android:layout_width="match_parent"
@@ -51,26 +53,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp"
+                android:padding="0dp"
                 android:gravity="center_vertical">
 
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="4dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <CheckBox
-                        android:id="@+id/cbSelectItem"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:buttonTint="@android:color/white"
-                        android:background="@drawable/checkbox_custom"
-                        android:button="@null" />
-                </FrameLayout>
-
+                <CheckBox
+                    android:id="@+id/cbSelectItem"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="8dp"
+                    />
 
                 <ImageView
                     android:id="@+id/imgProduct"
@@ -125,38 +116,52 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:background="@drawable/bg_quantity_border"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:padding="0.5dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="bottom"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp">
 
-                    <TextView
-                        android:id="@+id/btnMinus"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:background="@drawable/bg_quantity_border"
+                        android:orientation="horizontal"
                         android:gravity="center"
-                        android:text="−"
-                        android:textSize="25sp"
-                        android:textColor="#B0B0B0"/>
+                        android:padding="0.5dp"
+                        android:layout_gravity="bottom">
 
-                    <TextView
-                        android:id="@+id/txtQuantity"
-                        android:layout_width="40dp"
-                        android:layout_height="match_parent"
-                        android:textColor="@android:color/holo_red_dark"
-                        android:gravity="center"
-                        android:text="1"
-                        android:textSize="16sp"/>
+                        <TextView
+                            android:id="@+id/btnMinus"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:gravity="center"
+                            android:text="−"
+                            android:textSize="20sp"
+                            android:textColor="#B0B0B0"
+                            android:layout_gravity="center_vertical" />
 
-                    <TextView
-                        android:id="@+id/btnPlus"
-                        android:layout_width="30dp"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="+"
-                        android:textSize="25sp"
-                        android:textColor="#555555"/>
+                        <TextView
+                            android:id="@+id/txtQuantity"
+                            android:layout_width="40dp"
+                            android:layout_height="30dp"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_vertical"/>
+
+                        <TextView
+                            android:id="@+id/btnPlus"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:gravity="center"
+                            android:text="+"
+                            android:textSize="20sp"
+                            android:textColor="#555555"
+                            android:layout_gravity="center_vertical"/>
+
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

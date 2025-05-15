@@ -5,11 +5,15 @@ import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import android.graphics.Canvas;
@@ -44,13 +48,20 @@ public class CartActivity extends AppCompatActivity {
     private CartAdapter cartAdapter;
     private List<CartItemModel> cartItemList;
     private static final String API_URL = "http://" + StringHelper.SERVER_IP +":9080/api/v1/cart/user";
-    private TextView tvTotalPrice, btnOrder; /////
+    private TextView tvTotalPrice, btnOrder, btnLogin; /////
     private CheckBox cbSelectAll; ///
     private ImageView btnBack;
+    int userId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_cart);
 
         recyclerViewCart = findViewById(R.id.recyclerViewCart);
@@ -58,9 +69,25 @@ public class CartActivity extends AppCompatActivity {
         cbSelectAll = findViewById(R.id.cbSelectAll);
         btnOrder = findViewById(R.id.btnOrder);/////
         btnBack = findViewById(R.id.btnBack);
+        View emptyLayout = findViewById(R.id.layoutEmptyCart);
+        LinearLayout layoutBottom = findViewById(R.id.layoutBottom);
+        btnLogin = findViewById(R.id.btnLogin);
 
-        int userId = SharedPrefManager.getInstance(this).getUserId();
+        userId = SharedPrefManager.getInstance(this).getUserId();
         getCartItems(userId);
+
+        if(userId == -1)
+        {
+            recyclerViewCart.setVisibility(View.GONE);
+            layoutBottom.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
+
+
+        btnLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(CartActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
 
         btnBack.setOnClickListener(v -> {
             finish(); // Quay lại activity trước đó
@@ -208,13 +235,9 @@ public class CartActivity extends AppCompatActivity {
                             cartAdapter.notifyItemChanged(position); // Khôi phục nếu lỗi
                         }
                 );
-
                 queue.add(deleteRequest);
                 updateTotalPrice();///
             }
-
-
-
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                     float dX, float dY, int actionState, boolean isCurrentlyActive) {
@@ -222,9 +245,6 @@ public class CartActivity extends AppCompatActivity {
                 ViewCompat.setTranslationX(foregroundView, dX);
             }
         });
-
         itemTouchHelper.attachToRecyclerView(recyclerViewCart);
-
     }
-
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -39,6 +41,7 @@ import java.util.List;
 
 import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.ProductAdapter;
+import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.CategoryModel;
 import vn.iotstar.ecoveggieapp.models.ProductModel;
@@ -54,7 +57,8 @@ public class HomeActivity extends AppCompatActivity {
     private boolean isPriceDescending = true;
     private ImageView iconSort;
     private EditText edtSearchbar;
-    private TextView txtEmptyMessage;
+    private TextView txtEmptyMessage, cart_badge;
+    private int userId;
 
 
 
@@ -69,7 +73,12 @@ public class HomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
+        SharedPrefManager prefManager = SharedPrefManager.getInstance(this);
+
+        userId = prefManager.getUserId();
+
         ImageView cartIcon = findViewById(R.id.icon_cart);
+        fetchCartItemCount(userId);
 
         // Thiết lập sự kiện click cho biểu tượng giỏ hàng
         cartIcon.setOnClickListener(new View.OnClickListener() {
@@ -80,9 +89,9 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         // Nhận dữ liệu từ MainActivity
         Intent intent = getIntent();
-        int userId = intent.getIntExtra("user_id", -1);
         String username = intent.getStringExtra("username");
         String email = intent.getStringExtra("email");
         String phone = intent.getStringExtra("phone");
@@ -119,6 +128,7 @@ public class HomeActivity extends AppCompatActivity {
         edtSearchbar = findViewById(R.id.edtSearchbar);
         edtSearchbar.setInputType(InputType.TYPE_CLASS_TEXT);
         txtEmptyMessage = findViewById(R.id.txtEmptyMessage);
+        cart_badge = findViewById(R.id.cart_badge);
 
 
         setCategoryClickListener(txtPopular);
@@ -267,6 +277,12 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+            fetchCartItemCount(userId);
+    }
+
 
     private void fetchProducts(String url) {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -373,4 +389,46 @@ public class HomeActivity extends AppCompatActivity {
     private void fetchProductsBySoldQuantityDesc() {
         fetchProducts("http://" + StringHelper.SERVER_IP +":9080/api/v1/products/sold/desc");
     }
+
+    private void fetchCartItemCount(int userId) {
+        String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/cart/count?user_id=" + userId;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("CartResponse", "Raw response: " + response);
+                        try {
+                            int count = Integer.parseInt(response.trim());
+                            Log.d("CartResponse", "Parsed cart count: " + count);
+                            updateCartBadge(count);
+                        } catch (NumberFormatException e) {
+                            Log.e("CartResponse", "NumberFormatException: " + e.getMessage());
+                            updateCartBadge(0);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("CartResponse", "Volley error: " + error.getMessage());
+                        updateCartBadge(0);
+                    }
+                });
+
+        queue.add(request);
+    }
+
+    private void updateCartBadge(int count) {
+        if (count > 0) {
+            cart_badge.setText(String.valueOf(count));
+            cart_badge.setVisibility(View.VISIBLE);
+        } else {
+            cart_badge.setVisibility(View.GONE);
+        }
+    }
+
+
 }

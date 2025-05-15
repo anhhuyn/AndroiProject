@@ -50,17 +50,17 @@ import vn.iotstar.ecoveggieapp.models.ProductModel;
 public class ProductDetailActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
-    private TextView productName, productPrice, productDescription, sellerRating, productSale, productCount, productUnit;
+    private TextView productName, productPrice, productDescription, sellerRating, productSale, productCount, productUnit, cart_badge;
     private TextView btnAddToCart, btnBuyNow;
     private LinearLayout bottomNavigation, layoutReview;
     private ProductModel product;
     private RecyclerView recyclerViewThumbnails;
-    private ImageView btnBack;
+    private ImageView btnBack, ic_cart;
     private double price;
     private int stock;
     private String unit;
     private String imageUrl;
-    private int productId;
+    private int productId, userId = -1;
 
 
     @Override
@@ -76,8 +76,12 @@ public class ProductDetailActivity extends AppCompatActivity {
         //Ánh xạ
         initView();
 
+        SharedPrefManager prefManager = SharedPrefManager.getInstance(this);
+        userId = prefManager.getUserId();
+
         // Lấy chi tiết sản phẩm từ API
         fetchProductDetail(productId);
+        fetchCartItemCount(userId);
 
         btnBack.setOnClickListener(v -> {
             finish(); // Quay lại activity trước đó
@@ -94,6 +98,15 @@ public class ProductDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(ProductDetailActivity.this, ReviewProductActivity.class);
             intent.putExtra("productId", productId);
             startActivity(intent);
+        });
+
+        ic_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Mở màn hình giỏ hàng khi nhấn vào biểu tượng giỏ hàng
+                Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+                startActivity(intent);
+            }
         });
 
     }
@@ -114,6 +127,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         recyclerViewThumbnails = findViewById(R.id.recyclerViewThumbnails);
         btnBack = findViewById(R.id.btnBack);
         layoutReview = findViewById(R.id.layoutReview);
+        ic_cart = findViewById(R.id.icon_cart);
+        cart_badge = findViewById(R.id.cart_badge);
     }
 
     private void fetchProductDetail(int productId) {
@@ -239,24 +254,32 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         btnBuy.setOnClickListener(v -> {
-            int quantity = Integer.parseInt(txtQuantity.getText().toString());
 
-            ArrayList<CheckoutItemModel> itemList = new ArrayList<>();
-            itemList.add(new CheckoutItemModel(
-                    productId,
-                    productName.getText().toString(),
-                    unit,
-                    price,
-                    quantity,
-                    imageUrl
-            ));
+            if(userId == -1)
+            {
+                Intent intent = new Intent(ProductDetailActivity.this, GuestActivity.class);
+                startActivity(intent);
+            }
+            else {
+                int quantity = Integer.parseInt(txtQuantity.getText().toString());
 
-            Intent intent = new Intent(this, CheckoutActivity.class);
-            intent.putExtra("checkout_items", itemList);
-            startActivity(intent);
+                ArrayList<CheckoutItemModel> itemList = new ArrayList<>();
+                itemList.add(new CheckoutItemModel(
+                        productId,
+                        productName.getText().toString(),
+                        unit,
+                        price,
+                        quantity,
+                        imageUrl
+                ));
+
+                Intent intent = new Intent(this, CheckoutActivity.class);
+                intent.putExtra("checkout_items", itemList);
+                startActivity(intent);
 
 
-            dialog.dismiss();
+                dialog.dismiss();
+            }
         });
 
         dialog.setCancelable(true);
@@ -307,6 +330,12 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // Handle adding to cart and calling API
         btnAddToCart.setOnClickListener(v -> {
+            if(userId == -1)
+            {
+                Intent intent = new Intent(ProductDetailActivity.this, GuestActivity.class);
+                startActivity(intent);
+            }
+            else {
             int quantity = Integer.parseInt(txtQuantity.getText().toString());
             int userId = SharedPrefManager.getInstance(this).getUserId();
 
@@ -318,6 +347,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     response -> {
                         // Handle success
                         Toast.makeText(ProductDetailActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                        fetchCartItemCount(userId);
                         dialog.dismiss();
                     },
                     error -> {
@@ -329,10 +359,60 @@ public class ProductDetailActivity extends AppCompatActivity {
             // Add the request to the Volley request queue
             RequestQueue queue = Volley.newRequestQueue(ProductDetailActivity.this);
             queue.add(stringRequest);
+        }
         });
 
         dialog.setCancelable(true);
         dialog.show();
+    }
+
+    private void fetchCartItemCount(int userId) {
+        String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/cart/count?user_id=" + userId;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("CartResponse", "Raw response: " + response);
+                        try {
+                            int count = Integer.parseInt(response.trim());
+                            Log.d("CartResponse", "Parsed cart count: " + count);
+                            updateCartBadge(count);
+                        } catch (NumberFormatException e) {
+                            Log.e("CartResponse", "NumberFormatException: " + e.getMessage());
+                            updateCartBadge(0);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("CartResponse", "Volley error: " + error.getMessage());
+                        updateCartBadge(0);
+                    }
+                });
+
+        queue.add(request);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (userId != -1) {
+            fetchCartItemCount(userId); // Cập nhật lại số lượng trong giỏ hàng
+        }
+    }
+
+
+    private void updateCartBadge(int count) {
+        if (count > 0) {
+            cart_badge.setText(String.valueOf(count));
+            cart_badge.setVisibility(View.VISIBLE);
+        } else {
+            cart_badge.setVisibility(View.GONE);
+        }
     }
 
 }

@@ -41,6 +41,21 @@
         android:layout_marginBottom="-4dp"/>
 
 
+    <TextView
+        android:id="@+id/txtLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đăng nhập/ Đăng ký"
+        android:textColor="@color/green_main"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:textSize="11sp"
+        app:layout_constraintTop_toBottomOf="@id/ImgAvatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
     <!-- Username -->
     <TextView
         android:id="@+id/edtUsername"
@@ -64,23 +79,7 @@
         app:layout_constraintTop_toBottomOf="@id/edtUsername"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0 Người theo dõi"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:layout_marginEnd="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="52 Đang theo dõi"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-    </LinearLayout>
+        android:layout_marginTop="4dp"/>
 
     <!-- Tiêu đề "Đơn mua" và nút "Xem lịch sử mua hàng" -->
     <LinearLayout
@@ -130,16 +129,41 @@
 
         <!-- Chờ xác nhận -->
         <LinearLayout
+            android:id="@+id/layout_confirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
             android:gravity="center">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_wait_for_confirm" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_wait_for_confirm"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_wait_for_confirm" />
+
+                <!-- Badge hiển thị số lượng chờ xác nhận -->
+                <TextView
+                    android:id="@+id/confirm_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:background="@drawable/badge_background"
+                    android:text="5"
+                    android:textSize="11sp"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:minWidth="20dp"
+                    android:minHeight="9dp"
+                    android:layout_alignEnd="@id/icon_wait_for_confirm"
+                    android:layout_alignTop="@id/icon_wait_for_confirm"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="20dp"/>
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -148,19 +172,44 @@
                 android:textSize="12sp"
                 android:textColor="@android:color/black"/>
         </LinearLayout>
-
         <!-- Chờ lấy hàng -->
         <LinearLayout
+            android:id="@+id/layout_delivery"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
             android:gravity="center">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_waiting_pickup" />
+            <!-- RelativeLayout để gắn badge lên icon -->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_waiting_pickup"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_waiting_pickup" />
+
+                <!-- Badge hiển thị số lượng -->
+                <TextView
+                    android:id="@+id/pickup_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:background="@drawable/badge_background"
+                    android:text="3"
+                    android:textSize="11sp"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:minWidth="20dp"
+                    android:minHeight="9dp"
+                    android:layout_alignEnd="@id/icon_waiting_pickup"
+                    android:layout_alignTop="@id/icon_waiting_pickup"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="20dp"/>
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -172,16 +221,41 @@
 
         <!-- Chờ giao hàng -->
         <LinearLayout
+            android:id="@+id/layout_shipping"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
             android:gravity="center">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_waiting_delivery" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_waiting_delivery"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_waiting_delivery" />
+
+                <!-- Badge hiển thị số lượng chờ giao hàng -->
+                <TextView
+                    android:id="@+id/delivery_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:background="@drawable/badge_background"
+                    android:text="2"
+                    android:textSize="11sp"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:padding="0dp"
+                    android:minWidth="20dp"
+                    android:minHeight="9dp"
+                    android:layout_alignEnd="@id/icon_waiting_delivery"
+                    android:layout_alignTop="@id/icon_waiting_delivery"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="20dp"/>
+            </RelativeLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -615,25 +689,28 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layout_store"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
             <ImageView
                 android:id="@+id/icon_store"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:src="@drawable/ic_store"
-                android:contentDescription="Cửa hàng" />
+                android:contentDescription="Cửa hàng"
+                android:src="@drawable/ic_store" />
+
             <TextView
                 android:id="@+id/text_store"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Cửa hàng"
                 android:textColor="#696969"
-                android:textSize="13sp"
-                android:gravity="center" />
+                android:textSize="13sp" />
         </LinearLayout>
 
         <LinearLayout

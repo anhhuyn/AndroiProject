@@ -42,7 +42,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         ProductModel product = productList.get(position);
         holder.txtProductName.setText(product.getProduct_name());
-        holder.txtPrice.setText("Giá: $" + product.getPrice());
+        holder.txtPrice.setText("Giá: đ" + product.getPrice());
         holder.txtStock.setText("Đã bán " + product.getInstock_quantity());
 
         // Load hình ảnh đầu tiên từ danh sách hình ảnh

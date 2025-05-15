@@ -2,6 +2,7 @@ package vn.iotstar.ecoveggieapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,15 +15,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import vn.iotstar.ecoveggieapp.R;
+import vn.iotstar.ecoveggieapp.helpers.ApiService;
 import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private LinearLayout layoutAccount, layoutHome, layoutLogout, layoutPoint, layoutAddress, layoutReview;
+    private LinearLayout layoutAccount, layoutHome, layoutLogout, layoutPoint, layoutAddress, layoutReview, layoutConfirm, layoutDelivery, layoutShipping, order_title_section, order_section, my_utilities_section, account, address;
     private ImageView editAccount, imgAvatar;
-    private TextView txtUsername, txtOrder;
+    private TextView txtUsername, txtOrder, txtLogin;
+    private TextView confirmBadge, pickupBadge, deliveryBadge;
+    private int userId = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +45,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         initViews();
         setListeners();
+        loadOrderCounts();
 
         // Nhận dữ liệu từ Intent
         SharedPrefManager prefManager = SharedPrefManager.getInstance(this);
 
-        int userId = prefManager.getUserId();
+        userId = prefManager.getUserId();
         String username = prefManager.getUsername();
 
         String email = prefManager.getEmail();
@@ -48,6 +59,28 @@ public class ProfileActivity extends AppCompatActivity {
         String avatar = prefManager.getAvatar();
         String gender = prefManager.getGender();
         String birthday = prefManager.getBirthday();
+
+        Log.d("UserInfo", "userId = " + userId);
+
+        if(userId == -1)
+        {
+            txtLogin.setVisibility(View.VISIBLE);
+            txtUsername.setVisibility(View.GONE);
+            layoutLogout.setVisibility(View.GONE);
+            editAccount.setClickable(false);
+            order_title_section.setClickable(false);
+            order_section.setClickable(false);
+            my_utilities_section.setClickable(false);
+            account.setClickable(false);
+            address.setClickable(false);
+            layoutConfirm.setClickable(false);
+            layoutDelivery.setClickable(false);
+            layoutShipping.setClickable(false);
+            layoutReview.setClickable(false);
+            txtOrder.setClickable(false);
+            layoutPoint.setClickable(false);
+
+        }
 
 
         txtUsername.setText(username);
@@ -74,10 +107,111 @@ public class ProfileActivity extends AppCompatActivity {
         layoutAddress = findViewById(R.id.address);
         layoutReview = findViewById(R.id.layoutReview);
         txtOrder = findViewById(R.id.order_history);
+        confirmBadge = findViewById(R.id.confirm_badge);
+        pickupBadge = findViewById(R.id.pickup_badge);
+        deliveryBadge = findViewById(R.id.delivery_badge);
+        layoutConfirm = findViewById(R.id.layout_confirm);
+        layoutDelivery = findViewById(R.id.layout_delivery);
+        layoutShipping = findViewById(R.id.layout_shipping);
+        LinearLayout layoutHome = findViewById(R.id.layout_home);
+        LinearLayout layoutCategory = findViewById(R.id.layout_category);
+        LinearLayout layoutStore = findViewById(R.id.layout_store);
+        txtLogin = findViewById(R.id.txtLogin);
+        order_title_section = findViewById(R.id.order_title_section);
+        order_section = findViewById(R.id.order_section);
+        my_utilities_section = findViewById(R.id.my_utilities_section);
+        account = findViewById(R.id.account);
+        address = findViewById(R.id.address);
+
+        layoutHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        layoutCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, CategoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        layoutStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, StoreActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void loadOrderCounts() {
+        SharedPrefManager prefManager = SharedPrefManager.getInstance(this);
+        int userId = prefManager.getUserId();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://" + StringHelper.SERVER_IP +":9080/api/v1/") // sửa URL backend phù hợp
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService orderApi = retrofit.create(ApiService.class);
+
+        loadCountForStatus(orderApi, userId, "Pending Confirm", confirmBadge);
+        loadCountForStatus(orderApi, userId, "Pending Delivery", pickupBadge);
+        loadCountForStatus(orderApi, userId, "Pending Ship", deliveryBadge);
+    }
+
+    private void loadCountForStatus(ApiService orderApi, int userId, String status, TextView badge) {
+        orderApi.countOrdersByStatus(userId, status).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    int count = response.body();
+                    if (count > 0) {
+                        badge.setText(String.valueOf(count));
+                        badge.setVisibility(View.VISIBLE);
+                    } else {
+                        badge.setVisibility(View.GONE);
+                    }
+                } else {
+                    badge.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                badge.setVisibility(View.GONE);
+            }
+        });
     }
 
 
     private void setListeners() {
+
+        layoutConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToOrder("Pending Confirm");
+            }
+        });
+
+        layoutDelivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToOrder("Pending Delivery");
+            }
+        });
+
+        layoutShipping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToOrder("Pending Ship");
+            }
+        });
 
         txtOrder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +267,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPrefManager.getInstance(ProfileActivity.this).clear(); // Xóa dữ liệu người dùng
+                SharedPrefManager.getInstance(ProfileActivity.this).setRemembered(false);
 
                 // Chuyển về màn hình đăng nhập (MainActivity hoặc LoginActivity tùy bạn)
                 Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
@@ -142,6 +277,13 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // Thêm overload có trạng thái
+    private void goToOrder(String status) {
+        Intent intent = new Intent(ProfileActivity.this, OrderActivity.class);
+        intent.putExtra("order_status", status);
+        startActivity(intent);
     }
 
     private void goToOrder() {

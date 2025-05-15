@@ -52,6 +52,9 @@ public interface ApiService {
     @DELETE("address/delete/{id}")
     Call<Void> deleteAddress(@Path("id") int id);
 
+    @PUT("products/{id}/update-quantity")
+    Call<ResponseBody> updateProductQuantity(@Path("id") int productId, @Query("quantity") int quantity);
+
     @FormUrlEncoded
     @POST("reviews/add")
     Call<ReviewModel> addReview(
@@ -116,4 +119,15 @@ public interface ApiService {
 
     @GET("order/detail/{orderId}")
     Call<List<Map<String, Object>>> getOrderDetails(@Path("orderId") int orderId);
+
+    @GET("orders/count")
+    Call<Integer> countOrdersByStatus(
+            @Query("customerId") int customerId,
+            @Query("status") String status
+    );
+
+    @GET("address/{id}")
+    Call<AddressModel> getAddressById(@Path("id") int id);
+
+
 }

@@ -5,7 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.*;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +51,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private ImageView btnBack;
     private List<CheckoutItemModel> itemList = new ArrayList<>();
     private int addressId, total;
-    private LinearLayout layoutCOD, layoutBank;
+    private LinearLayout layoutCOD, layoutBank, layoutAddress;
     private String selectedPaymentMethod = "";
     private String userNote = "";
     private Switch switchPoint;
@@ -56,6 +59,10 @@ public class CheckoutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_checkout);
         initViews();
 
@@ -70,6 +77,12 @@ public class CheckoutActivity extends AppCompatActivity {
         layoutCOD.setOnClickListener(v -> selectPaymentMethod("COD"));
         layoutBank.setOnClickListener(v -> selectPaymentMethod("BANK"));
         setupListeners(userId);
+
+        layoutAddress.setOnClickListener(v -> {
+            Intent intent = new Intent(CheckoutActivity.this, AddressActivity.class);
+            intent.putExtra("source", 1); // Truyền số 1 vào với key "source"
+            startActivityForResult(intent, 1);
+        });
 
     }
 
@@ -88,6 +101,7 @@ public class CheckoutActivity extends AppCompatActivity {
         layoutBank = findViewById(R.id.layoutBank);
         txtPoint = findViewById(R.id.txtPoint);
         switchPoint = findViewById(R.id.switchPoint);
+        layoutAddress = findViewById(R.id.layoutAddress);
 
     }
 
@@ -153,7 +167,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 return;
             }
             double total = getTotalAmount();
-            createOrder(userId, total - (total * 0.10), selectedPaymentMethod, "Pending", userNote, addressId);
+            createOrder(userId, total - (total * 0.10), selectedPaymentMethod, "Pending Confirm", userNote, addressId);
         });
         btnBack.setOnClickListener(v -> {
             finish(); // Quay lại activity trước đó
@@ -244,10 +258,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                     String message = response.body().string().trim();
                                     Log.d("API_RESPONSE", message);
                                     if (message.contains("success")) {
-                                        showToast("Chi tiết đơn hàng đã được thêm thành công.");
-                                        Intent intent = new Intent(CheckoutActivity.this, ProfileActivity.class);
-                                        startActivity(intent); // Chuyển hướng sang ProfileActivity
-                                        finish(); // Đóng CheckoutActivity
+                                        updateProductQuantity(productId, quantity);
                                     } else {
                                         showToast("Thêm chi tiết đơn hàng thất bại: " + message);
                                     }
@@ -266,7 +277,32 @@ public class CheckoutActivity extends AppCompatActivity {
                         }
                     });
         }
+        Intent intent = new Intent(CheckoutActivity.this, ProfileActivity.class);
+        startActivity(intent);
+        finish();
     }
+
+    private void updateProductQuantity(int productId, int quantityUsed) {
+        ApiService apiService = getApiService();
+
+        apiService.updateProductQuantity(productId, quantityUsed)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            Log.d("PRODUCT_UPDATE", "Số lượng sản phẩm " + productId + " đã được cập nhật.");
+                        } else {
+                            Log.e("PRODUCT_UPDATE", "Cập nhật thất bại cho sản phẩm " + productId);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.e("PRODUCT_UPDATE", "Lỗi khi cập nhật sản phẩm: " + t.getMessage());
+                    }
+                });
+    }
+
 
 
     private void showNoteDialog() {
@@ -288,6 +324,48 @@ public class CheckoutActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            int selectedAddressId = data.getIntExtra("selectedAddressId", -1);
+            if (selectedAddressId != -1) {
+                getAddressById(selectedAddressId);
+                Log.d("CheckoutActivity", "Địa chỉ được chọn ID: " + selectedAddressId);
+            }
+        }
+    }
+
+    private void getAddressById(int id) {
+        ApiService apiService = getApiService();
+        apiService.getAddressById(id).enqueue(new Callback<AddressModel>() {
+            @Override
+            public void onResponse(Call<AddressModel> call, Response<AddressModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    AddressModel address = response.body();
+                    addressId = address.getId(); // cập nhật addressId
+
+                    String username = address.getUser().getUsername();
+                    String phone = address.getPhone();
+                    String fullAddress = address.getDetail() + ", " + address.getWards() + ", " +
+                            address.getDistrict() + ", " + address.getProvince();
+
+                    txtUsername.setText(username + " (+84) " + phone.substring(1));
+                    txtAddress.setText(fullAddress);
+                } else {
+                    showToast("Không thể lấy địa chỉ đã chọn");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressModel> call, Throwable t) {
+                showToast("Lỗi khi lấy địa chỉ mới: " + t.getMessage());
+            }
+        });
+    }
+
+
 
     private void fetchPointData(int userId) {
         String url = "http://" + StringHelper.SERVER_IP + ":9080/api/v1/points/"+userId; // thay URL thật

@@ -3,11 +3,15 @@ package vn.iotstar.ecoveggieapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -29,16 +33,24 @@ import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    //Connection conn;
-    //String str;
-
-    private TextView txt_signup, txt_forgotpass;
+    private TextView txt_signup, txt_forgotpass, txt_visit_store;
     private Button btn_login;
     private EditText edtEmail, edtPassword;
+    private CheckBox chkRemember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        EdgeToEdge.enable(this);
+
+        if (SharedPrefManager.getInstance(this).isRemembered()) {
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            finish();
+            return;
+        }
 
         setContentView(R.layout.activity_login);
 
@@ -47,9 +59,16 @@ public class MainActivity extends AppCompatActivity {
         edtEmail = findViewById(R.id.edt_login_email);
         edtPassword = findViewById(R.id.edt_login_password);
         btn_login = findViewById(R.id.btn_login);
+        chkRemember = findViewById(R.id.checkBox);
+        txt_visit_store = findViewById(R.id.txt_visit_store);
 
         txt_signup.setOnClickListener(this::goToSignUp);
         txt_forgotpass.setOnClickListener(this::goToForgotPass);
+
+        txt_visit_store.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+        });
 
         // Set login button on click:
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -58,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 authenticateUser();
             }
         });
-
-
     }
 
     public void authenticateUser(){
@@ -104,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
                             Intent goToHome = new Intent(MainActivity.this, HomeActivity.class);
                             startActivity(goToHome);
                             finish();
+                            if (chkRemember.isChecked()) {
+                                SharedPrefManager.getInstance(MainActivity.this).setRemembered(true);
+                            }
+
 
 
                         }catch (JSONException e){

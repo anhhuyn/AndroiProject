@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     tools:context=".activities.MainActivity">
+    <TextView
+        android:id="@+id/txt_visit_store"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Tham quan cửa hàng >"
+        android:textColor="@color/green_main"
+        android:textStyle="italic"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
     <ImageView
         android:id="@+id/img_login_password"

@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import vn.iotstar.ecoveggieapp.R;
 import vn.iotstar.ecoveggieapp.adapters.PendingOrderAdapter;
 import vn.iotstar.ecoveggieapp.helpers.ApiService;
+import vn.iotstar.ecoveggieapp.helpers.SharedPrefManager;
 import vn.iotstar.ecoveggieapp.helpers.StringHelper;
 import vn.iotstar.ecoveggieapp.models.PendingOrder;
 
@@ -33,17 +38,54 @@ public class OrderActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PendingOrderAdapter orderAdapter; // Adapter riêng
     private List<PendingOrder> orderList = new ArrayList<>();
+    private ImageView btnBack;
 
-    private final int customerId = 17;
+    private int customerId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_order);
+
+        SharedPrefManager prefManager = SharedPrefManager.getInstance(this);
+
+        customerId = prefManager.getUserId();
 
         initView();
         initTabClickListeners();
-        loadPendingOrders();
+        // Nhận trạng thái đơn hàng nếu có (ví dụ: "Pending Confirm", "Pending Delivery", ...)
+        String status = getIntent().getStringExtra("order_status");
+        if (status != null) {
+            switch (status) {
+                case "Pending Confirm":
+                    selectTab(tabPendingConfirmation);
+                    loadPendingOrders();
+                    break;
+                case "Pending Delivery":
+                    selectTab(tabWaitingPickup);
+                    loadWaitingDeliveryOrders();
+                    break;
+                case "Pending Ship":
+                    selectTab(tabShipping);
+                    loadPendingShipOrders();
+                    break;
+                default:
+                    selectTab(tabDelivered);
+                    loadDeliveredOrders();
+                    break;
+            }
+        } else {
+            selectTab(tabDelivered);
+            loadDeliveredOrders();
+        }
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
     }
     private void initView() {
@@ -53,6 +95,7 @@ public class OrderActivity extends AppCompatActivity {
         tabDelivered = findViewById(R.id.tabDelivered);
         tabCanceled = findViewById(R.id.tabCanceled);
         tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
+        btnBack = findViewById(R.id.btnBack);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -120,6 +163,7 @@ public class OrderActivity extends AppCompatActivity {
                     orderList.clear();
                     orderList.addAll(response.body());
                     orderAdapter.notifyDataSetChanged();
+                    updateEmptyView("Bạn chưa có đơn hàng đang xử lý nào.");
 
                     tvEmptyMessage.setVisibility(orderList.isEmpty() ? View.VISIBLE : View.GONE);
                 } else {
@@ -150,6 +194,7 @@ public class OrderActivity extends AppCompatActivity {
                     orderList.clear();
                     orderList.addAll(response.body());
                     orderAdapter.notifyDataSetChanged();
+                    updateEmptyView("Bạn chưa có đơn hàng chờ vận chuyển nào.");
 
                     tvEmptyMessage.setVisibility(orderList.isEmpty() ? View.VISIBLE : View.GONE);
                 } else {
@@ -181,7 +226,8 @@ public class OrderActivity extends AppCompatActivity {
                     orderList.addAll(response.body());
                     orderAdapter.notifyDataSetChanged();
 
-                    tvEmptyMessage.setVisibility(orderList.isEmpty() ? View.VISIBLE : View.GONE);
+                    updateEmptyView("Bạn chưa có đơn hàng đang giao nào.");
+
                 } else {
                     Toast.makeText(OrderActivity.this, "Không thể tải đơn hàng", Toast.LENGTH_SHORT).show();
                 }
@@ -194,6 +240,16 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void updateEmptyView(String message) {
+        if (orderList.isEmpty()) {
+            tvEmptyMessage.setText(message);
+            tvEmptyMessage.setVisibility(View.VISIBLE);
+        } else {
+            tvEmptyMessage.setVisibility(View.GONE);
+        }
+    }
+
 
     // Tải đơn hàng "Đã giao"
     private void loadDeliveredOrders() {
@@ -210,6 +266,7 @@ public class OrderActivity extends AppCompatActivity {
                     orderList.clear();
                     orderList.addAll(response.body());
                     orderAdapter.notifyDataSetChanged();
+                    updateEmptyView("Bạn chưa có đơn hàng đã giao nào.");
 
                     tvEmptyMessage.setVisibility(orderList.isEmpty() ? View.VISIBLE : View.GONE);
                 } else {
@@ -240,6 +297,7 @@ public class OrderActivity extends AppCompatActivity {
                     orderList.clear();
                     orderList.addAll(response.body());
                     orderAdapter.notifyDataSetChanged();
+                    updateEmptyView("Bạn chưa có đơn hàng đã hủy nào.");
 
                     tvEmptyMessage.setVisibility(orderList.isEmpty() ? View.VISIBLE : View.GONE);
                 } else {

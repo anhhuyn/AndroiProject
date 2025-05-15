@@ -31,6 +31,7 @@ public class AddressActivity extends AppCompatActivity {
     private List<AddressModel> addressList = new ArrayList<>();
     private LinearLayout layoutAdd;
     private ImageView btnBack;
+    private int source = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,8 @@ public class AddressActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_address);
         initViews();
+
+        source = getIntent().getIntExtra("source", -1);
 
         btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> {
@@ -85,6 +88,17 @@ public class AddressActivity extends AppCompatActivity {
         rvAddresses.setLayoutManager(new LinearLayoutManager(this));
         addressAdapter = new AddressAdapter(this, addressList); // <-- truyền context
         rvAddresses.setAdapter(addressAdapter);
+
+        if (source == 1) {
+            addressAdapter.setOnAddressClickListener(address -> {
+                // Trả về CheckoutActivity
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("selectedAddressId", address.getId());
+                Log.d("CheckoutActivity", "Địa chỉ được chọn ID1: " + address.getId());
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            });
+        }
     }
 
 

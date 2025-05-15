@@ -21,13 +21,21 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
     private Activity activity;
     private List<AddressModel> addressList;
+    private OnAddressClickListener listener;
 
     public AddressAdapter(Activity activity, List<AddressModel> addressList) {
         this.activity = activity;
         this.addressList = addressList;
     }
+    public void setOnAddressClickListener(OnAddressClickListener listener) {
+        this.listener = listener;
+    }
 
 
+
+    public interface OnAddressClickListener {
+        void onAddressClick(AddressModel address);
+    }
 
 
     @NonNull
@@ -52,8 +60,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             holder.tvDefault.setVisibility(View.GONE);
         }
 
-        // Set sự kiện click
         holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onAddressClick(address);
+            }
+        });
+
+
+        holder.tvEdit.setOnClickListener(v -> {
             Intent intent = new Intent(activity, EditAddressActivity.class);
             intent.putExtra("addressId", address.getId());
             intent.putExtra("userName", address.getUser().getUsername());
@@ -64,8 +78,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             intent.putExtra("province", address.getProvince());
             intent.putExtra("isDefault", address.isDefault());
             activity.startActivityForResult(intent, 100);
-
         });
+
     }
 
     @Override
@@ -81,7 +95,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
 
     public static class AddressViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvPhone, tvDetail, tvWards, tvDefault;
+        TextView tvName, tvPhone, tvDetail, tvWards, tvDefault, tvEdit;
 
         public AddressViewHolder(View itemView) {
             super(itemView);
@@ -90,6 +104,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             tvDetail = itemView.findViewById(R.id.tvAddressLine1);
             tvWards = itemView.findViewById(R.id.tvAddressLine2);
             tvDefault = itemView.findViewById(R.id.tvDefault);
+            tvEdit = itemView.findViewById(R.id.txtEdit);
         }
     }
 }

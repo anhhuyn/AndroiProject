@@ -3,9 +3,13 @@ package vn.iotstar.ecoveggieapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,10 +42,16 @@ public class OrderDetailActivity extends AppCompatActivity {
     private RecyclerView recyclerViewProducts;
     private CheckoutItemAdapter adapter;
     private List<CheckoutItemModel> productList = new ArrayList<>();
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_order_detail);
 
         // Ánh xạ View
@@ -50,6 +60,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         addressDetail = findViewById(R.id.address_detail);
         totalAmount = findViewById(R.id.total_amount);
         recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
+        btnBack = findViewById(R.id.btnBack);
 
         int orderId = getIntent().getIntExtra("order_id", -1);
         adapter = new CheckoutItemAdapter(this, productList, item -> {
@@ -64,8 +75,10 @@ public class OrderDetailActivity extends AppCompatActivity {
         recyclerViewProducts.setAdapter(adapter);
         recyclerViewProducts.setLayoutManager(new LinearLayoutManager(this));
 
-
         getOrderDetails(orderId);
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
 
     }
     private void getOrderDetails(int orderId) {
@@ -95,12 +108,12 @@ public class OrderDetailActivity extends AppCompatActivity {
                         } else {
                             switch (rawStatus) {
                                 case "Pending Delivery":
-                                    statusVN = "Đang giao hàng";
+                                    statusVN = "Chờ lấy hàng";
                                     break;
                                 case "Pending Ship":
-                                    statusVN = "Đang chờ vận chuyển";
+                                    statusVN = "Đang giao hàng";
                                     break;
-                                case "Pending":
+                                case "Pending Confirm":
                                     statusVN = "Chờ xử lý";
                                     break;
                                 case "Delivered":

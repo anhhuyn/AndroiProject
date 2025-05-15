@@ -98,21 +98,6 @@
                     android:layout_height="32dp"
                     android:src="@drawable/ic_notification" />
 
-                <TextView
-                    android:id="@+id/notification_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/badge_background"
-                    android:text="35"
-                    android:textSize="10sp"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:padding="1dp"
-                    android:minWidth="23dp"
-                    android:minHeight="9dp"
-                    android:layout_alignEnd="@id/icon_notification"
-                    android:layout_alignTop="@id/icon_notification" />
-
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

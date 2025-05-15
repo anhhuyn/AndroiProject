@@ -377,6 +377,66 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <LinearLayout
+        android:id="@+id/top_right_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Icon giỏ hàng -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/icon_cart"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_cart_white"
+                android:background="@drawable/circle_background_edit_profile"
+                android:contentDescription="Giỏ hàng"
+                android:scaleType="centerInside"
+                android:padding="6dp" />
+
+            <TextView
+                android:id="@+id/cart_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/badge_background"
+                android:text="99+"
+                android:textSize="10sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:padding="1dp"
+                android:minWidth="23dp"
+                android:minHeight="9dp"
+                android:layout_alignEnd="@id/icon_cart"
+                android:layout_alignTop="@id/icon_cart" />
+        </RelativeLayout>
+
+        <!-- Icon thông báo -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp">
+
+            <ImageView
+                android:id="@+id/icon_notification"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_notification_white"
+                android:background="@drawable/circle_background_edit_profile"
+                android:contentDescription="Thông báo"
+                android:scaleType="centerInside"
+                android:padding="6dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
     <!-- Add to Cart and Buy Now Buttons -->
 
     <LinearLayout
