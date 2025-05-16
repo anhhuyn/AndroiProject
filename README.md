@@ -61,5 +61,50 @@ Tính năng chính:
 - **Kiểu dữ liệu**: Quan hệ (Relational Database)
 - **Đặc điểm**: Cấu trúc rõ ràng, tối ưu truy vấn, dễ mở rộng
 
+### 3. Hướng dẫn cài đặt Frontend cho EcoVeggieApp (Android)
 
+Hướng dẫn này sẽ giúp thiết lập và chạy ứng dụng frontend EcoVeggieApp trên môi trường Android Studio.
+
+## Yêu cầu tiên quyết
+
+Trước khi bắt đầu, hãy đảm bảo đã cài đặt các phần mềm sau:
+
+* **Android Studio:** Môi trường phát triển tích hợp (IDE) chính thức cho phát triển ứng dụng Android. Có thể tải xuống từ [https://developer.android.com/studio](https://developer.android.com/studio).
+* **Android SDK (Software Development Kit):** Bộ công cụ phát triển cần thiết để xây dựng ứng dụng Android. Android Studio sẽ giúp tải xuống các SDK cần thiết trong quá trình cài đặt hoặc cấu hình dự án.
+* **Thiết bị Android thực tế hoặc Android Emulator:** Để chạy và kiểm thử ứng dụng. Android Studio cung cấp trình giả lập (emulator) mà có thể cấu hình.
+
+## Các bước cài đặt
+
+1.  **Clone hoặc tải xuống dự án:**
+    * **Sử dụng Git:** Mở terminal hoặc command prompt, điều hướng đến thư mục muốn lưu trữ dự án và chạy lệnh sau:
+        ```bash
+        git clone 
+
+2.  **Mở dự án trong Android Studio:**
+    * Khởi động Android Studio.
+    * Trên màn hình Welcome, chọn **Open an existing project**.
+    * Điều hướng đến thư mục chứa dự án đã clone của EcoVeggieApp và chọn thư mục gốc của dự án (thường là thư mục chứa file `build.gradle` cấp dự án). Nhấn **OK**.
+    * Android Studio sẽ bắt đầu build dự án và tải xuống các dependencies cần thiết. Quá trình này có thể mất một chút thời gian tùy thuộc vào tốc độ internet và kích thước dự án.
+
+3.  **Kiểm tra và cấu hình `StringHelper.java` (nếu cần):**
+    * Trong cửa sổ **Project** của Android Studio (thường ở bên trái), điều hướng đến đường dẫn sau: `app` -> `java` -> (các package) -> `vn.iotstar.ecoveggieapp.helpers`.
+    * Mở file `StringHelper.java`.
+    * Kiểm tra biến `SERVER_IP`:
+
+        ```java
+        package vn.iotstar.ecoveggieapp.helpers;
+
+        public class StringHelper {
+            public static final String SERVER_IP = "192.168.1.104";
+              ...
+        }
+        ```
+
+    * Đảm bảo giá trị của `SERVER_IP` trỏ đến địa chỉ IP chính xác của server backend EcoVeggieApp.
+
+4.  **Build và chạy ứng dụng:**
+    * **Chọn thiết bị chạy:** Trên thanh công cụ của Android Studio, thấy một dropdown menu hiển thị thiết bị đang được chọn. Nếu chưa có thiết bị nào được cấu hình hoặc kết nối,cần tạo một Android Virtual Device (AVD) bằng cách nhấp vào **Device Manager** hoặc kết nối thiết bị Android thực tế qua USB.
+    * **Chạy ứng dụng:** Nhấp vào nút **Run** (biểu tượng mũi tên màu xanh lá cây) trên thanh công cụ.
+    * Android Studio sẽ build project và cài đặt ứng dụng lên thiết bị hoặc emulator đã chọn. Ứng dụng sẽ tự động khởi chạy sau khi cài đặt thành công.
+    * Theo dõi cửa sổ **Logcat** (thường ở phía dưới của Android Studio) để xem các log và thông tin gỡ lỗi của ứng dụng.
 
