@@ -78,7 +78,7 @@ Trước khi bắt đầu, hãy đảm bảo đã cài đặt các phần mềm 
 1.  **Clone hoặc tải xuống dự án:**
     * **Sử dụng Git:** Mở terminal hoặc command prompt, điều hướng đến thư mục muốn lưu trữ dự án và chạy lệnh sau:
         ```bash
-        git clone 
+        git clone https://github.com/anhhuyn/AndroiProject.git
 
 2.  **Mở dự án trong Android Studio:**
     * Khởi động Android Studio.
